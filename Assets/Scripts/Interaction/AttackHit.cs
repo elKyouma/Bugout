@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 /*This script can be placed on any collider that is a trigger. It can hurt enemies or the player, 
@@ -8,14 +7,14 @@ so we use it for both player attacks and enemy attacks.
 
 public class AttackHit : MonoBehaviour
 {
-    public enum AttacksWhat { EnemyBase, NewPlayer, DestructibleWall};
+    public enum AttacksWhat { EnemyBase, Player, DestructibleWall };
     public AttacksWhat attacksWhat;
     [SerializeField] private bool oneHitKill;
     [SerializeField] private float startCollisionDelay; //Some enemy types, like EnemyBombs, should not be able blow up until a set amount of time
     private int targetSide = 1; //Is the attack target on the left or right side of this object?
     [SerializeField] private GameObject parent; //This must be specified manually, as some objects will have a parent that is several layers higher
     [SerializeField] private bool isBomb = false; //Is the object a bomb that blows up when touching the player?
-    [SerializeField] private int hitPower = 1; 
+    [SerializeField] private int hitPower = 1;
 
     // Use this for initialization
     void Start()
@@ -41,12 +40,12 @@ public class AttackHit : MonoBehaviour
         //Determine what components we're hitting
 
         //Attack Player
-        if (attacksWhat == AttacksWhat.NewPlayer)
+        if (attacksWhat == AttacksWhat.Player)
         {
-            if (col.GetComponent<NewPlayer>() != null)
+            if (col.GetComponent<Player>() != null)
             {
-                NewPlayer.Instance.GetHurt(targetSide, hitPower);
-                if (isBomb) transform.parent.GetComponent<EnemyBase>().Die(); 
+                Player.Instance.GetHurt(targetSide, hitPower);
+                if (isBomb) transform.parent.GetComponent<EnemyBase>().Die();
             }
         }
 

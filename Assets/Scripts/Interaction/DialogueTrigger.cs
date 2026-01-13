@@ -1,13 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
+using VisualDirector;
 /*Triggers a dialogue conversation, passing unique commands and information to the dialogue box and inventory system for fetch quests, etc.*/
 
 public class DialogueTrigger : MonoBehaviour
 {
 
-    [Header ("References")]
+    public VisualDirectorRuntimeGraph vs; //optional reference, if there is use new system instead of legacy dialogue system
+
+    [Header("References")]
     [SerializeField] private GameObject finishTalkingActivateObject; //After completing a conversation, an object can activate. 
     [SerializeField] private Animator iconAnimator; //The E icon animator
 
@@ -17,7 +17,7 @@ public class DialogueTrigger : MonoBehaviour
     [SerializeField] private bool repeat; //Set to true if the player should be able to talk again and again to the NPC. 
     [SerializeField] private bool sleeping;
 
-    [Header ("Dialogue")]
+    [Header("Dialogue")]
     [SerializeField] private string characterName; //The character's name shown in the dialogue UI
     [SerializeField] private string dialogueStringA; //The dialogue string that occurs before the fetch quest
     [SerializeField] private string dialogueStringB; //The dialogue string that occurs after fetch quest
@@ -25,14 +25,14 @@ public class DialogueTrigger : MonoBehaviour
     [SerializeField] private AudioClip[] audioLinesB; //The audio lines that occur after the fetch quest
     [SerializeField] private AudioClip[] audioChoices; //The audio lines that occur when selecting an audio choice
 
-    [Header ("Fetch Quest")]
+    [Header("Fetch Quest")]
     [SerializeField] private GameObject deleteGameObject; //If an NPC is holding the object, and gives it to you, this object will destroy
     [SerializeField] private string getWhichItem; //The inventory item given if items is fetched
     [SerializeField] private int getBugsAmount; //Or the amount of coins given if item is fetched
     [SerializeField] private string finishTalkingAnimatorBool; //After completing a conversation, an animation can be fired
     [SerializeField] private string finishTalkingActivateObjectString; //After completing a conversation, an object's name can be searched for and activated.
-    [SerializeField] private GameObject activateObjectChoice1; 
-    [SerializeField] private GameObject activateObjectChoice2; 
+    [SerializeField] private GameObject activateObjectChoice1;
+    [SerializeField] private GameObject activateObjectChoice2;
     [SerializeField] private Sprite getItemSprite; //The sprite of the inventory item given, shown in HUD
     [SerializeField] private AudioClip getSound; //When the player is given an object, this sound will play
     [SerializeField] private bool instantGet; //Player can be immediately given an item the moment the conversation begins
@@ -44,72 +44,48 @@ public class DialogueTrigger : MonoBehaviour
 
     private bool toReset = false;
 
-    public void SetDialgueA(string s)
-    {
-        dialogueStringA = s;
-    }
-
-    public void SetDialgueB(string s)
-    {
-        dialogueStringB = s;
-    }
-
-    public void SetActivateObject1(GameObject go)
-    {
-        activateObjectChoice1 = go;
-    }
-
-    public void SetActivateObject2(GameObject go)
-    {
-        activateObjectChoice2 = go;
-    }
-
-    public void ResetDialogue()
-    {
-
-        toReset = true;
-    }
+    public void SetDialgueA(string s) => dialogueStringA = s;
+    public void SetDialgueB(string s) => dialogueStringB = s;
+    public void SetActivateObject1(GameObject go) => activateObjectChoice1 = go;
+    public void SetActivateObject2(GameObject go) => activateObjectChoice2 = go;
+    public void ResetDialogue() => toReset = true;
 
     void OnTriggerStay2D(Collider2D col)
     {
         if (instantGet)
-        {
             InstantGet();
-        }
 
-        if (col.gameObject == NewPlayer.Instance.gameObject && !sleeping && !completed && NewPlayer.Instance.grounded)
+        if (col.gameObject == Player.Instance.gameObject && !sleeping && !completed && Player.Instance.grounded)
         {
             iconAnimator.SetBool("active", true);
             if (autoHit || (Input.GetAxis("Submit") > 0))
             {
                 iconAnimator.SetBool("active", false);
-                if (requiredItem == "" && requiredBugs == 0 || !GameManager.Instance.inventory.ContainsKey(requiredItem) && requiredBugs == 0 || (requiredBugs != 0 && NewPlayer.Instance.bugs < requiredBugs))
-                {
-                    GameManager.Instance.dialogueBoxController.Appear(dialogueStringA, characterName, this, false, audioLinesA, audioChoices, finishTalkingAnimatorBool, finishTalkingActivateObject, finishTalkingActivateObjectString, repeat, activateObjectChoice1, activateObjectChoice2);
-                }
-                else if (requiredBugs == 0 && GameManager.Instance.inventory.ContainsKey(requiredItem) || (requiredBugs != 0 && NewPlayer.Instance.bugs >= requiredBugs))
+                if (requiredItem == "" && requiredBugs == 0 || !GameManager.Instance.inventory.ContainsKey(requiredItem) && requiredBugs == 0 || (requiredBugs != 0 && Player.Instance.bugs < requiredBugs))
+                    if(!vs)
+                        GameManager.Instance.dialogueBoxController.Appear(dialogueStringA, characterName, this, false, audioLinesA, audioChoices, finishTalkingAnimatorBool, finishTalkingActivateObject, finishTalkingActivateObjectString, repeat, activateObjectChoice1, activateObjectChoice2);
+                    else
+                        FindFirstObjectByType<VisualDirector.VisualDirector>().Execute(vs);
+                else if (requiredBugs == 0 && GameManager.Instance.inventory.ContainsKey(requiredItem) || (requiredBugs != 0 && Player.Instance.bugs >= requiredBugs))
                 {
                     if (dialogueStringB != "")
-                    {
-                        GameManager.Instance.dialogueBoxController.Appear(dialogueStringB, characterName, this, true, audioLinesB, audioChoices, "", null, "", repeat, activateObjectChoice1, activateObjectChoice2);
-                    }
+                        if(!vs)
+                            GameManager.Instance.dialogueBoxController.Appear(dialogueStringB, characterName, this, true, audioLinesB, audioChoices, "", null, "", repeat, activateObjectChoice1, activateObjectChoice2);
+                        else
+                            FindFirstObjectByType<VisualDirector.VisualDirector>().Execute(vs);
                     else
-                    {
                         UseItem();
-                    }
                 }
                 sleeping = true;
             }
         }
         else
-        {
             iconAnimator.SetBool("active", false);
-        }
     }
 
     void OnTriggerExit2D(Collider2D col)
     {
-        if (col.gameObject == NewPlayer.Instance.gameObject)
+        if (col.gameObject == Player.Instance.gameObject)
         {
             iconAnimator.SetBool("active", false);
             sleeping = completed;
@@ -121,26 +97,20 @@ public class DialogueTrigger : MonoBehaviour
         if (!completed)
         {
             if (useItemAnimatorBool != "")
-            {
                 useItemAnimator.SetBool(useItemAnimatorBool, true);
-            }
 
             if (deleteGameObject)
-            {
                 Destroy(deleteGameObject);
-            }
 
             Collect();
 
             if (GameManager.Instance.inventory.ContainsKey(requiredItem))
             {
-                if(removeRequiredItem)
+                if (removeRequiredItem)
                     GameManager.Instance.RemoveInventoryItem(requiredItem);
             }
             else
-            {
-                NewPlayer.Instance.bugs -= requiredBugs;
-            }
+                Player.Instance.bugs -= requiredBugs;
 
             repeat = false;
         }
@@ -151,19 +121,13 @@ public class DialogueTrigger : MonoBehaviour
         if (!completed)
         {
             if (getWhichItem != "")
-            {
                 GameManager.Instance.GetInventoryItem(getWhichItem, getItemSprite);
-            }
 
             if (getBugsAmount != 0)
-            {
-                NewPlayer.Instance.bugs += getBugsAmount;
-            }
+                Player.Instance.bugs += getBugsAmount;
 
             if (getSound != null)
-            {
                 GameManager.Instance.audioSource.PlayOneShot(getSound);
-            }
 
             completed = true;
         }
@@ -177,7 +141,7 @@ public class DialogueTrigger : MonoBehaviour
 
     private void Update()
     {
-        if(toReset && completed && sleeping)
+        if (toReset && completed && sleeping)
         {
             toReset = false;
             sleeping = false;

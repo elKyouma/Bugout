@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 /*Use on any gameObject to fade in and out an audioClip. Used for things like
@@ -11,7 +10,7 @@ public class AudioTrigger : MonoBehaviour
     private AudioSource audioSource;
     [SerializeField] private bool autoPlay; //Begins playing sound immediately without the player triggering the collider
     [SerializeField] private bool controlsTitle; //This allows the level title to fade in while also fading in the music
-    [SerializeField] private float fadeSpeed; 
+    [SerializeField] private float fadeSpeed;
     [SerializeField] private bool loop;
     [SerializeField] private AudioClip sound;
     public float maxVolume; //The volume we are going to fade to
@@ -33,7 +32,7 @@ public class AudioTrigger : MonoBehaviour
         AudioTrigger to automatically play, the audioSource will begin playing.
         */
 
-        if (!NewPlayer.Instance.dead)
+        if (!Player.Instance.dead)
         {
             if (triggered || autoPlay)
             {
@@ -68,7 +67,7 @@ public class AudioTrigger : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D col)
     {
-        if (col.gameObject == NewPlayer.Instance.gameObject)
+        if (col.gameObject == Player.Instance.gameObject)
         {
             if (!triggered)
             {
@@ -84,7 +83,7 @@ public class AudioTrigger : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D col)
     {
-        if (col == NewPlayer.Instance)
+        if (col == Player.Instance)
         {
             triggered = false;
         }

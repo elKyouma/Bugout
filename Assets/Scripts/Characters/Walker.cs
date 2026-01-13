@@ -1,28 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Walker : PhysicsObject
 {
-    [Header ("Reference")]
+    [Header("Reference")]
     public EnemyBase enemyBase;
     [SerializeField] private GameObject graphic;
 
-    [Header ("Properties")]
+    [Header("Properties")]
     [SerializeField] private LayerMask layerMask; //What can the Walker actually touch?
-    [SerializeField] enum EnemyType { Bug, Zombie }; //Bugs will simply patrol. Zombie's will immediately start chasing you forever until you defeat them.
+    public enum EnemyType { Bug, Zombie }; //Bugs will simply patrol. Zombie's will immediately start chasing you forever until you defeat them.
     [SerializeField] EnemyType enemyType;
-    [SerializeField] enum EnemyLocation { Apartament, ApartamentEntrance, Basement};
+    public enum EnemyLocation { Apartament, ApartamentEntrance, Basement };
     [SerializeField] EnemyLocation enemylocation;
-   
+
     public float attentionRange;
     public float changeDirectionEase = 1; //How slowly should we change directions? A higher number is slower!
     [System.NonSerialized] public float direction = 1;
     private Vector2 distanceFromPlayer; //How far is this enemy from the player?
     [System.NonSerialized] public float directionSmooth = 1; //The float value that lerps to the direction integer.
     [SerializeField] private bool followPlayer;
-    [SerializeField] private bool flipWhenTurning = false; //Should the graphic flip along localScale.x?
-    private RaycastHit2D ground;
     public float hurtLaunchPower = 10; //How much force should be applied to the player when getting hurt?
     public float jumpPower = 7;
     [System.NonSerialized] public bool jump = false;
@@ -45,7 +41,7 @@ public class Walker : PhysicsObject
     [Header("Sounds")]
     public AudioClip jumpSound;
     public AudioClip stepSound;
-    
+
     void Start()
     {
         enemyBase = GetComponent<EnemyBase>();
@@ -76,70 +72,51 @@ public class Walker : PhysicsObject
     {
         Vector2 move = Vector2.zero;
 
-        if (!NewPlayer.Instance.frozen)
+        if (!Player.Instance.frozen)
         {
-            distanceFromPlayer = new Vector2 (NewPlayer.Instance.gameObject.transform.position.x - transform.position.x, NewPlayer.Instance.gameObject.transform.position.y - transform.position.y);
+            distanceFromPlayer = new Vector2(Player.Instance.gameObject.transform.position.x - transform.position.x, Player.Instance.gameObject.transform.position.y - transform.position.y);
             directionSmooth += ((direction * sitStillMultiplier) - directionSmooth) * Time.deltaTime * changeDirectionEase;
             move.x = (1 * directionSmooth) + launch;
             launch += (0 - launch) * Time.deltaTime;
-            
+
             if (move.x < 0)
-            {
                 transform.localScale = new Vector3(-origScale.x, origScale.y, origScale.z);
-            }
             else
-            {
                 transform.localScale = new Vector3(origScale.x, origScale.y, origScale.z);
-            }
 
             if (!enemyBase.recoveryCounter.recovering)
             {
                 //Flip the graphic depending on the speed
                 if (move.x > 0.01f)
-                {
                     if (graphic.transform.localScale.x == -1)
-                    {
                         graphic.transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
-                    }
-                }
-                else if (move.x < -0.01f)
-                {
-                    if (graphic.transform.localScale.x == 1)
-                    {
-                        graphic.transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
-                    }
-                }
+                    else if (move.x < -0.01f)
+                        if (graphic.transform.localScale.x == 1)
+                            graphic.transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
 
                 //Check floor type
-                ground = Physics2D.Raycast(transform.position, -Vector2.up);
                 Debug.DrawRay(transform.position, -Vector2.up, Color.green);
 
                 //Check if player is within range to follow
                 if (enemyType == EnemyType.Zombie)
                 {
                     //if ((Mathf.Abs(distanceFromPlayer.x) < attentionRange) && (Mathf.Abs(distanceFromPlayer.y) < attentionRange))
-                    if((enemylocation == EnemyLocation.Apartament && NewPlayer.Instance.enteredApartament == true) ||
-                        (enemylocation == EnemyLocation.ApartamentEntrance && NewPlayer.Instance.enteredApartamentEntrance) ||
-                        (enemylocation == EnemyLocation.Basement && NewPlayer.Instance.enteredBasement))
+                    if ((enemylocation == EnemyLocation.Apartament && Player.Instance.enteredApartament == true) ||
+                        (enemylocation == EnemyLocation.ApartamentEntrance && Player.Instance.enteredApartamentEntrance) ||
+                        (enemylocation == EnemyLocation.Basement && Player.Instance.enteredBasement))
                     {
                         followPlayer = true;
                         sitStillMultiplier = 1;
 
                         if (neverStopFollowing)
-                        {
                             attentionRange = 10000000000;
-                        }
                     }
                     else
                     {
                         if (sitStillWhenNotFollowing)
-                        {
                             sitStillMultiplier = 0;
-                        }
                         else
-                        {
                             sitStillMultiplier = 1;
-                        }
                     }
                 }
 
@@ -147,18 +124,12 @@ public class Walker : PhysicsObject
                 {
                     rayCastSize.y = 200;
                     if (distanceFromPlayer.x < 0)
-                    {
                         direction = -1;
-                    }
                     else
-                    {
                         direction = 1;
-                    }
                 }
                 else
-                {
                     rayCastSize.y = rayCastSizeOrig.y;
-                }
 
                 //Check for walls
                 rightWall = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y + rayCastOffset.y), Vector2.right, rayCastSize.x, layerMask);
@@ -166,13 +137,9 @@ public class Walker : PhysicsObject
                 if (rightWall.collider != null)
                 {
                     if (!followPlayer)
-                    {
                         direction = -1;
-                    }
                     else if (direction == 1)
-                    {
                         Jump();
-                    }
 
                 }
 
@@ -181,32 +148,24 @@ public class Walker : PhysicsObject
                 if (leftWall.collider != null)
                 {
                     if (!followPlayer)
-                    {
                         direction = 1;
-                    }
                     else if (direction == -1)
-                    {
                         Jump();
-                    }
                 }
 
-                if( Mathf.Abs(transform.position.x - NewPlayer.Instance.transform.position.x) < Mathf.Abs(transform.position.y - NewPlayer.Instance.transform.position.y) )
+                if (Mathf.Abs(transform.position.x - Player.Instance.transform.position.x) < Mathf.Abs(transform.position.y - Player.Instance.transform.position.y))
                     Jump();
 
                 //Check for ledges. Walker's height check is much higher! They will fall pretty far, but will not fall to death. 
                 rightLedge = Physics2D.Raycast(new Vector2(transform.position.x + rayCastOffset.x, transform.position.y), Vector2.down, rayCastSize.y, layerMask);
                 Debug.DrawRay(new Vector2(transform.position.x + rayCastOffset.x, transform.position.y), Vector2.down * rayCastSize.y, Color.blue);
                 if ((rightLedge.collider == null || rightLedge.collider.gameObject.layer == 14) && direction == 1)
-                {
                     direction = -1;
-                }
 
                 leftLedge = Physics2D.Raycast(new Vector2(transform.position.x - rayCastOffset.x, transform.position.y), Vector2.down, rayCastSize.y, layerMask);
                 Debug.DrawRay(new Vector2(transform.position.x - rayCastOffset.x, transform.position.y), Vector2.down * rayCastSize.y, Color.blue);
                 if ((leftLedge.collider == null || leftLedge.collider.gameObject.layer == 14) && direction == -1)
-                {
                     direction = 1;
-                }
             }
         }
 
@@ -228,7 +187,8 @@ public class Walker : PhysicsObject
     public void PlayStepSound()
     {
         enemyBase.audioSource.pitch = (Random.Range(0.6f, 1f));
-        enemyBase.audioSource.PlayOneShot(stepSound);
+        if(stepSound)
+            enemyBase.audioSource.PlayOneShot(stepSound);
     }
 
     public void PlayJumpSound()

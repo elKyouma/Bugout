@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,7 +34,7 @@ public class HUD : MonoBehaviour
         healthBarWidthEased = healthBarWidth;
         ammoBarWidth = 1;
         ammoBarWidthEased = ammoBarWidth;
-        coins = (float)NewPlayer.Instance.bugs;
+        coins = (float)Player.Instance.bugs;
         coinsEased = coins;
         blankUI = inventoryItemGraphic[0].GetComponent<Image>().sprite;
     }
@@ -43,7 +43,7 @@ public class HUD : MonoBehaviour
     {
         //Update coins text mesh to reflect how many coins the player has! However, we want them to count up.
         coinsMesh.text = Mathf.Round(coinsEased).ToString();
-        coinsEased += ((float)NewPlayer.Instance.bugs - coinsEased) * Time.deltaTime * 5f;
+        coinsEased += ((float)Player.Instance.bugs - coinsEased) * Time.deltaTime * 5f;
 
         if (coinsEased >= coins)
         {
@@ -52,14 +52,14 @@ public class HUD : MonoBehaviour
         }
 
         //Controls the width of the health bar based on the player's total health
-        healthBarWidth = (float)NewPlayer.Instance.health / (float)NewPlayer.Instance.maxHealth;
+        healthBarWidth = (float)Player.Instance.health / (float)Player.Instance.maxHealth;
         healthBarWidthEased += (healthBarWidth - healthBarWidthEased) * Time.deltaTime*2 * healthBarWidthEased;
         healthBar.transform.localScale = new Vector2(healthBarWidthEased, 1);
 
         //Controls the width of the ammo bar based on the player's total ammo
         if (ammoBar)
         {
-            ammoBarWidth = (float)NewPlayer.Instance.ammo / (float)NewPlayer.Instance.maxAmmo;
+            ammoBarWidth = (float)Player.Instance.ammo / (float)Player.Instance.maxAmmo;
             ammoBarWidthEased += (ammoBarWidth - ammoBarWidthEased) * Time.deltaTime * ammoBarWidthEased;
             ammoBar.transform.localScale = new Vector2(ammoBarWidthEased, transform.localScale.y);
         }
@@ -81,7 +81,7 @@ public class HUD : MonoBehaviour
         if (GameManager.Instance.inventory.ContainsKey("reachedCheckpoint"))
         {
             //Send player back to the checkpoint if they reached one!
-            NewPlayer.Instance.ResetLevel();
+            Player.Instance.ResetLevel();
         }
         else
         {

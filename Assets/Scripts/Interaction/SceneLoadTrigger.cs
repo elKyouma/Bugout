@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +11,7 @@ public class SceneLoadTrigger : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject == NewPlayer.Instance.gameObject)
+        if (col.gameObject == Player.Instance.gameObject)
         {
             GameManager.Instance.hud.loadSceneName = loadSceneName;
             GameManager.Instance.inventory.Clear();

@@ -1,5 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 //Allows object to break after depleting its "health".
@@ -32,22 +30,22 @@ public class Breakable : MonoBehaviour
         //If breakable object health is above zero, it's not recovering from a recent hit, get hit!
         if (health > 0 && !recoveryCounter.recovering)
         {
-            if (!requireDownAttack || (requireDownAttack && NewPlayer.Instance.pounding))
+            if (!requireDownAttack || (requireDownAttack && Player.Instance.pounding))
             {
-                if (NewPlayer.Instance.pounding)
+                if (Player.Instance.pounding)
                 {
-                    NewPlayer.Instance.PoundEffect();
+                    Player.Instance.PoundEffect();
                 }
 
                 if (hitSound != null)
                 {
                     GameManager.Instance.audioSource.PlayOneShot(hitSound);
                 }
-               
+
                 //Ensure the player can't hit the box multiple times in one hit
                 recoveryCounter.counter = 0;
 
-                StartCoroutine(NewPlayer.Instance.FreezeFrameEffect());
+                StartCoroutine(Player.Instance.FreezeFrameEffect());
 
                 health -= 1;
                 animator.SetTrigger("hit");

@@ -1,53 +1,44 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
-using Cinemachine;
 
 /*Allows the camera to shake when the player punches, gets hurt, etc. Put any other custom camera effects in this script!*/
 
 public class CameraEffects : MonoBehaviour
 {
     public Vector3 cameraWorldSize;
-    public CinemachineFramingTransposer cinemachineFramingTransposer;
+    public CinemachinePositionComposer cinemachineFramingTransposer;
     [SerializeField] private CinemachineBasicMultiChannelPerlin multiChannelPerlin;
-    public float screenYDefault;
-    public float screenYTalking;
     public float defaultShake = 1;
     public float defaultShakeLength = 0.2f;
     [Range(0, 10)]
     [System.NonSerialized] public float shakeLength = 10;
-    [SerializeField] private CinemachineVirtualCamera virtualCamera;
+    [SerializeField] private CinemachineCamera virtualCamera;
 
     void Start()
     {
         //Ensures we can shake the camera using Cinemachine. Don't really worry too much about this weird stuff. It's just Cinemachine's variables.
-        cinemachineFramingTransposer = virtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
-        screenYDefault = cinemachineFramingTransposer.m_ScreenX;
-        
+        //cinemachineFramingTransposer = virtualCamera.GetComponent<CinemachinePositionComposer>();
+
         //Inform the player what CameraEffect it should be controlling, no matter what scene we are on.
-        if(NewPlayer.Instance)
-            NewPlayer.Instance.cameraEffects = this;
-        virtualCamera = GetComponent<CinemachineVirtualCamera>();
-        multiChannelPerlin = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        if (Player.Instance)
+            Player.Instance.cameraEffects = this;
+        //virtualCamera = GetComponent<CinemachineCamera>();
+        //multiChannelPerlin = virtualCamera.GetComponent<CinemachineBasicMultiChannelPerlin>();
 
-        //Tells the virtualCamera what to follow
-        virtualCamera.Follow = NewPlayer.Instance.transform;
+        virtualCamera.Follow = Player.Instance.transform;
     }
 
-    void Update()
-    {
-        multiChannelPerlin.m_FrequencyGain += (0 - multiChannelPerlin.m_FrequencyGain) * Time.deltaTime * (10 - shakeLength);
-    }
+    void Update() => multiChannelPerlin.FrequencyGain += (0 - multiChannelPerlin.FrequencyGain) * Time.deltaTime * (10 - shakeLength);
 
     public void Shake(float shake, float length)
     {
         shakeLength = length;
-        multiChannelPerlin.m_FrequencyGain = shake;
+        multiChannelPerlin.FrequencyGain = shake;
     }
 
     public void ShakeS(float length)
     {
         shakeLength = length;
-        multiChannelPerlin.m_FrequencyGain = defaultShake;
+        multiChannelPerlin.FrequencyGain = defaultShake;
     }
 }

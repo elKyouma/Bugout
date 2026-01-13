@@ -1,8 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/*The base physics for walking objects (NewPlayer.cs and Walker.cs). Source: https://learn.unity.com/tutorial/live-session-2d-platformer-character-controller! 
+/*The base physics for walking objects (Player.cs and Walker.cs). Source: https://learn.unity.com/tutorial/live-session-2d-platformer-character-controller! 
 Lots of complex stuff going on here. In ten years of making games, I've never worried about understanding any of this kind of stuff!*/
 
 public class PhysicsObject : MonoBehaviour

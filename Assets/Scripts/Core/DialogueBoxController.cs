@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using System.Collections;
 using TMPro;
+using UnityEngine;
 
 /*Controls the dialogue box and it's communication with Dialogue.cs, which contains the character dialogue*/
 
@@ -31,7 +30,6 @@ public class DialogueBoxController : MonoBehaviour
     [Header("Other")]
     private bool ableToAdvance;
     private bool activated;
-    [SerializeField] private float typeSpeed = 1f;
     private int choiceLocation;
     private int cPos = 0;
     private string[] characterDiologue;
@@ -65,18 +63,12 @@ public class DialogueBoxController : MonoBehaviour
                     if (index < choiceLocation || (extendConvo && index < characterDiologue.Length - 1))
                     {
                         if (ableToAdvance)
-                        {
                             StartCoroutine(Advance());
-                        }
                     }
                     else
-                    {
                         StartCoroutine(Close());
-                    }
                     if (index == 0)
-                    {
                         ableToAdvance = true;
-                    }
                 }
             }
 
@@ -87,9 +79,7 @@ public class DialogueBoxController : MonoBehaviour
                 {
                     submitKeyIsDown = false;
                     if (index == 0)
-                    {
                         ableToAdvance = true;
-                    }
                 }
             }
 
@@ -113,14 +103,12 @@ public class DialogueBoxController : MonoBehaviour
 
             //Check for first release to ensure we can't spam
             if (horizontalKeyIsDown && Input.GetAxis("Horizontal") == 0)
-            {
                 horizontalKeyIsDown = false;
-            }
         }
     }
 
     public void Appear(string fName, string characterName, DialogueTrigger dTrigger, bool useItemAfterClose, AudioClip[] audioL, AudioClip[] audioC, string finishTalkingAnimBool, GameObject finishTalkingActivateGObject, string finishTalkingActivateGOString, bool r,
-                        GameObject activateObjectChoice1,  GameObject activateObjectChoice2)
+                        GameObject activateObjectChoice1, GameObject activateObjectChoice2)
     {
         this.activateObjectChoice1 = activateObjectChoice1;
         this.activateObjectChoice2 = activateObjectChoice2;
@@ -137,9 +125,7 @@ public class DialogueBoxController : MonoBehaviour
 
         //NOOOOOOOOOOOO ;-(
         if (useItemAfterClose && dialogueTrigger.name != "Seller")
-        {
             currentDialogueTrigger = dialogueTrigger;
-        }
 
         nameMesh.text = characterName;
         characterDiologue = dialogue.dialogue[fileName];
@@ -150,13 +136,11 @@ public class DialogueBoxController : MonoBehaviour
             choiceLocation = GetChoiceLocation();
         }
         else
-        {
             choiceLocation = characterDiologue.Length - 1;
-        }
 
         animator.SetBool("active", true);
         activated = true;
-        NewPlayer.Instance.Freeze(true);
+        Player.Instance.Freeze(true);
         index = -1;
         StartCoroutine(Advance());
     }
@@ -183,9 +167,7 @@ public class DialogueBoxController : MonoBehaviour
 
         //The dialogueTrigger will pass itself into this function only if you have the right items to close the dialogue and complete the quest
         if (currentDialogueTrigger != null)
-        {
             currentDialogueTrigger.UseItem();
-        }
 
         activated = false;
         animator.SetBool("active", false);
@@ -198,30 +180,22 @@ public class DialogueBoxController : MonoBehaviour
         ShowChoices(false);
 
         if (finishTalkingAnimatorBool != "")
-        {
             dialogueTrigger.GetComponent<DialogueTrigger>().useItemAnimator.SetBool(finishTalkingAnimatorBool, true);
-        }
 
         if (finishTalkingActivateGameObject != null)
-        {
             finishTalkingActivateGameObject.SetActive(true);
-        }
         else if (finishTalkingActivateGameObjectString != "")
-        {
             GameObject.Find(finishTalkingActivateGameObjectString).GetComponent<BoxCollider2D>().enabled = true;
-        }
 
         if (!repeat)
-        {
             dialogueTrigger.completed = true;
-        }
 
         dialogueTrigger = null;
         finishTalkingAnimatorBool = "";
         finishTalkingActivateGameObject = null;
         finishTalkingActivateGameObjectString = "";
         yield return new WaitForSeconds(1f);
-        NewPlayer.Instance.Freeze(false);
+        Player.Instance.Freeze(false);
         animator.SetInteger("choiceSelection", 1);
     }
 
@@ -231,14 +205,10 @@ public class DialogueBoxController : MonoBehaviour
         typing = true;
 
         if (ableToAdvance)
-        {
             animator.SetTrigger("press");
-        }
 
         if (index != choiceLocation)
-        {
             ShowChoices(false);
-        }
 
 
         if (index == choiceLocation + 1 && dialogue.dialogue.ContainsKey(fileName + "Choice1") && audioChoices.Length != 0)
@@ -269,21 +239,15 @@ public class DialogueBoxController : MonoBehaviour
 
         //Show choices
         if (index == choiceLocation && dialogue.dialogue.ContainsKey(fileName + "Choice1"))
-        {
             ShowChoices(true);
-        }
 
         //Play character audio
         if (audioLines.Length != 0)
         {
             dialogueAudioSource.Stop();
             if (index < audioLines.Length)
-            {
                 if (audioLines[index] != null)
-                {
                     dialogueAudioSource.PlayOneShot(audioLines[index]);
-                }
-            }
         }
     }
 
@@ -308,12 +272,8 @@ public class DialogueBoxController : MonoBehaviour
     public int GetChoiceLocation()
     {
         for (int i = 0; i < choiceDiologue.Length; i++)
-        {
             if (choiceDiologue[i] != "")
-            {
                 return i;
-            }
-        }
         return 0;
     }
 

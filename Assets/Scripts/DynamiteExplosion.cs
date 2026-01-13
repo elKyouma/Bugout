@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DynamiteExplosion : MonoBehaviour
@@ -17,17 +16,17 @@ public class DynamiteExplosion : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        startPosition = NewPlayer.Instance.transform.position;
+        startPosition = Player.Instance.transform.position;
         startPosition.y += 2f;
         gameObject.transform.position = startPosition;
         Debug.Log("dynamite exists");
     }
 
 
-    void OnCollisionEnter2D() 
+    void OnCollisionEnter2D()
     {
         Debug.Log("function works");
-        if(!explosionStarted)
+        if (!explosionStarted)
         {
             dynamiteFx.Play();
             StartCoroutine(Countdown());
@@ -38,7 +37,7 @@ public class DynamiteExplosion : MonoBehaviour
     IEnumerator Countdown()
     {
         yield return new WaitForSeconds(4);
-        
+
         var hitColliders = Physics2D.OverlapCircleAll(transform.position, 1.5f);
         foreach (Collider2D hitCollider in hitColliders)
         {
@@ -55,7 +54,7 @@ public class DynamiteExplosion : MonoBehaviour
             }
         }
 
-        if(Vector2.Distance(transform.position, NewPlayer.Instance.transform.position) <= 5f)
+        if (Vector2.Distance(transform.position, Player.Instance.transform.position) <= 5f)
         {
             GameManager.Instance.EndGame("PlayerExplosion");
         }
@@ -67,13 +66,13 @@ public class DynamiteExplosion : MonoBehaviour
             Graphics.SetActive(false);
             dynamiteFx.Stop();
             dynamiteFx.PlayOneShot(explosionFx);
-            NewPlayer.Instance.cameraEffects.Shake(100, 1f);
+            Player.Instance.cameraEffects.Shake(100, 1f);
 
             StartCoroutine(Destruction());
         }
-        
-        
-        
+
+
+
     }
 
     IEnumerator Destruction()

@@ -1,5 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /*The core functionality of both the EnemyFlyer and the EnemyWalker*/
@@ -8,14 +6,13 @@ using UnityEngine;
 
 public class EnemyBase : MonoBehaviour
 {
-    [Header ("Reference")]
+    [Header("Reference")]
     [System.NonSerialized] public AudioSource audioSource;
     public Animator animator;
-    private AnimatorFunctions animatorFunctions;
     [SerializeField] Instantiator instantiator;
     [System.NonSerialized] public RecoveryCounter recoveryCounter;
 
-    [Header ("Properties")]
+    [Header("Properties")]
     [SerializeField] private GameObject deathParticles;
     [SerializeField] private int health = 3;
     public AudioClip hitSound;
@@ -26,7 +23,6 @@ public class EnemyBase : MonoBehaviour
     {
         recoveryCounter = GetComponent<RecoveryCounter>();
         audioSource = GetComponent<AudioSource>();
-        animatorFunctions = GetComponent<AnimatorFunctions>();
     }
 
     void Update()
@@ -42,9 +38,9 @@ public class EnemyBase : MonoBehaviour
         //Hit the enemy, causing a damage effect, and decreasing health. Allows for requiring a downward pound attack
         if ((GetComponent<Walker>() != null || GetComponent<Flyer>() != null) && !recoveryCounter.recovering)
         {
-            if (!requirePoundAttack || (requirePoundAttack && NewPlayer.Instance.pounding))
+            if (!requirePoundAttack || (requirePoundAttack && Player.Instance.pounding))
             {
-                NewPlayer.Instance.cameraEffects.Shake(100, 1);
+                Player.Instance.cameraEffects.Shake(100, 1);
                 health -= hitPower;
                 animator.SetTrigger("hurt");
 
@@ -53,12 +49,9 @@ public class EnemyBase : MonoBehaviour
 
                 //Ensure the enemy and also the player cannot engage in hitting each other for the max recoveryTime for each
                 recoveryCounter.counter = 0;
-                NewPlayer.Instance.recoveryCounter.counter = 0;
+                Player.Instance.recoveryCounter.counter = 0;
 
-                if (NewPlayer.Instance.pounding)
-                {
-                    NewPlayer.Instance.PoundEffect();
-                }
+                if (Player.Instance.pounding) Player.Instance.PoundEffect();
 
 
                 //The Walker being launched after getting hit is a little different than the Flyer getting launched by a hit.
@@ -80,19 +73,16 @@ public class EnemyBase : MonoBehaviour
                     flyer.speed.y = flyer.speedEased.y;
                 }
 
-                NewPlayer.Instance.FreezeFrameEffect();
+                Player.Instance.FreezeFrameEffect();
             }
         }
     }
 
     public void Die()
     {
-        if (NewPlayer.Instance.pounding)
-        {
-            NewPlayer.Instance.PoundEffect();
-        }
+        if (Player.Instance.pounding) Player.Instance.PoundEffect();
 
-        NewPlayer.Instance.cameraEffects.Shake(200, 1);
+        Player.Instance.cameraEffects.Shake(200, 1);
         health = 0;
         deathParticles.SetActive(true);
         deathParticles.transform.parent = transform.parent;

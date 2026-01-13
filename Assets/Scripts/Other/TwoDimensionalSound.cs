@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,10 +22,10 @@ public class TwoDimensionalSound : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (NewPlayer.Instance == null) magnitude = 0;
+        if (Player.Instance == null) magnitude = 0;
         else
         {
-            distanceBetweenPlayer = transform.position - NewPlayer.Instance.transform.position;
+            distanceBetweenPlayer = transform.position - Player.Instance.transform.position;
             magnitude = (range - distanceBetweenPlayer.magnitude) / range;
         }
             

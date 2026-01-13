@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 /*Causes a bouncy platform to appear via animation if player is within range, allowing the player to bounce!*/
 
@@ -27,7 +24,7 @@ public class Trampoline : MonoBehaviour
 
     void Update()
     {
-        playerDifferenceX = Mathf.Abs(NewPlayer.Instance.gameObject.transform.position.x - transform.position.x);
+        playerDifferenceX = Mathf.Abs(Player.Instance.gameObject.transform.position.x - transform.position.x);
         if (playerDifferenceX < appearRange)
         {
             if (GameManager.Instance.inventory.ContainsKey(requiredItem))
@@ -47,10 +44,10 @@ public class Trampoline : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (other.gameObject == NewPlayer.Instance.gameObject && !NewPlayer.Instance.frozen)
+        if (other.gameObject == Player.Instance.gameObject && !Player.Instance.frozen)
         {
-            Debug.Log(NewPlayer.Instance.velocity.y);
-            if (NewPlayer.Instance.velocity.y < -.5)
+            Debug.Log(Player.Instance.velocity.y);
+            if (Player.Instance.velocity.y < -.5)
             {
                 Bounce();
             }
@@ -59,7 +56,7 @@ public class Trampoline : MonoBehaviour
 
     void Bounce()
     {
-        NewPlayer.Instance.Jump(jumpPower);
+        Player.Instance.Jump(jumpPower);
         animator.SetTrigger("bounce");
     }
 

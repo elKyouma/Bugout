@@ -1,5 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /*The functionality for flying enemies*/
@@ -7,19 +5,18 @@ using UnityEngine;
 public class Flyer : MonoBehaviour
 {
 
-    [Header ("References")]
-    private Rigidbody2D rigidbody2D;
+    [Header("References")]
     [SerializeField] private GameObject bomb;
     [System.NonSerialized] public EnemyBase enemyBase;
     private Transform lookAtTarget; //If I'm a bomb, I will point to a transform, like the player
 
-    [Header ("Ground Avoidance")]
+    [Header("Ground Avoidance")]
     [SerializeField] private float rayCastWidth = 5;
     [SerializeField] private float rayCastOffsetY = 1;
     [SerializeField] private LayerMask layerMask; //What will I be looking to avoid?
     private RaycastHit2D rayCastHit;
 
-    [Header ("Flight")]
+    [Header("Flight")]
     [SerializeField] private bool avoidGround; //Should I steer away from the ground?
     private Vector3 distanceFromPlayer;
     [SerializeField] private float maxSpeedDeviation;
@@ -30,7 +27,7 @@ public class Flyer : MonoBehaviour
     public float lifeSpan; //Keep at zero if you don't want to explode after a certain period of time.
     [System.NonSerialized] public float lifeSpanCounter;
     private bool sawPlayer = false; //Have I seen the player?
-    [SerializeField] private float speedMultiplier; 
+    [SerializeField] private float speedMultiplier;
     [System.NonSerialized] public Vector3 speed;
     [System.NonSerialized] public Vector3 speedEased;
     [SerializeField] private bool shootsBomb;
@@ -40,11 +37,10 @@ public class Flyer : MonoBehaviour
     void Start()
     {
         enemyBase = GetComponent<EnemyBase>();
-        rigidbody2D = GetComponent<Rigidbody2D>();
 
         if (enemyBase.isBomb)
         {
-            lookAtTarget = NewPlayer.Instance.gameObject.transform;
+            lookAtTarget = Player.Instance.gameObject.transform;
         }
 
         speedMultiplier += Random.Range(-maxSpeedDeviation, maxSpeedDeviation);
@@ -60,8 +56,8 @@ public class Flyer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        distanceFromPlayer.x = (NewPlayer.Instance.transform.position.x + targetOffset.x) - transform.position.x;
-        distanceFromPlayer.y = (NewPlayer.Instance.transform.position.y + targetOffset.y) - transform.position.y;
+        distanceFromPlayer.x = (Player.Instance.transform.position.x + targetOffset.x) - transform.position.x;
+        distanceFromPlayer.y = (Player.Instance.transform.position.y + targetOffset.y) - transform.position.y;
         speedEased += (speed - speedEased) * Time.deltaTime * easing;
         transform.position += speedEased * Time.deltaTime;
 
@@ -71,7 +67,7 @@ public class Flyer : MonoBehaviour
             speed.x = (Mathf.Abs(distanceFromPlayer.x) / distanceFromPlayer.x) * speedMultiplier;
             speed.y = (Mathf.Abs(distanceFromPlayer.y) / distanceFromPlayer.y) * speedMultiplier;
 
-            if (!NewPlayer.Instance.frozen)
+            if (!Player.Instance.frozen)
             {
                 if (shootsBomb)
                 {
@@ -94,7 +90,7 @@ public class Flyer : MonoBehaviour
         else
         {
             speed = Vector2.zero;
-            if (transform.position.y > (NewPlayer.Instance.transform.position.y + targetOffset.y) && sawPlayer)
+            if (transform.position.y > (Player.Instance.transform.position.y + targetOffset.y) && sawPlayer)
             {
                 speed = new Vector2(0f, -.05f);
             }
@@ -136,7 +132,7 @@ public class Flyer : MonoBehaviour
         {
             LookAt2D();
         }
-      
+
         if (lifeSpan != 0)
         {
             if (lifeSpanCounter < lifeSpan)

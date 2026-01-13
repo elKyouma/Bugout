@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -35,7 +34,7 @@ public class GameManager : MonoBehaviour
         public int bugs;
     }
 
-    [SerializeField] 
+    [SerializeField]
     private List<EndingClass> endingList = new List<EndingClass>();
     private Dictionary<string, Ending> endingDict = new Dictionary<string, Ending>();
     public Dictionary<string, int> gameCompletion = new Dictionary<string, int>();//0 nie zrobiono, 1 zrobiono
@@ -43,35 +42,26 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        if(Instance != this) Destroy(gameObject);
+        if (Instance != this) Destroy(gameObject);
 
         foreach (var kvp in endingList)
         {
             endingDict[kvp.key] = kvp.val;
-            gameCompletion[kvp.key] = PlayerPrefs.GetInt(kvp.key,0);
+            gameCompletion[kvp.key] = PlayerPrefs.GetInt(kvp.key, 0);
             reward[kvp.key] = kvp.bugs;
         }
     }
-    // Singleton instantiation
     public static GameManager Instance
     {
         get
         {
             if (instance == null)
-            {
-                instance = GameObject.FindObjectOfType<GameManager>();
-            }
+                instance = FindFirstObjectByType<GameManager>();
             return instance;
         }
     }
 
-    // Use this for initialization
-    void Start()
-    {
-        audioSource = GetComponent<AudioSource>();
-    }
-
-    // Use this for initialization
+    void Start() => audioSource = GetComponent<AudioSource>();
     public void GetInventoryItem(string name, Sprite image)
     {
         for (int i = 0; i < isFull.Length; i++)
@@ -79,7 +69,7 @@ public class GameManager : MonoBehaviour
             if (!isFull[i])
             {
                 Item item = new Item(image, i);
-                while(inventory.ContainsKey(name))
+                while (inventory.ContainsKey(name))
                 {
                     name += "Copy";
                 }
@@ -92,7 +82,7 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             }
-            
+
         }
 
     }
@@ -107,7 +97,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void ClearInventory()
-    {   
+    {
         inventory.Clear();
         hud.SetInventoryImage(hud.blankUI, 0);
     }
@@ -120,7 +110,7 @@ public class GameManager : MonoBehaviour
         {
             gameCompletion[ending] = 1;
             if (PlayerPrefs.GetInt(ending) == 0)
-                NewPlayer.Instance.bugs += reward[ending];
+                Player.Instance.bugs += reward[ending];
 
             PlayerPrefs.SetInt(ending, 1);
             EndingPlayer.currentEnding = endingDict[ending];

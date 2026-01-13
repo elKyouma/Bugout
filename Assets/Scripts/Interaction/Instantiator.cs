@@ -1,5 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /*Instantiates (creates) one or more objects*/
@@ -20,9 +18,7 @@ public class Instantiator : MonoBehaviour
             {
                 iObject = Instantiate(objects[i], transform.position, Quaternion.identity, null);
                 if (iObject.GetComponent<Ejector>() != null)
-                {
                     iObject.GetComponent<Ejector>().launchOnStart = true;
-                }
             }
         }
 
@@ -33,9 +29,7 @@ public class Instantiator : MonoBehaviour
             {
                 iObject = Instantiate(objects[0], transform.position, Quaternion.identity, null);
                 if (iObject.GetComponent<Ejector>() != null)
-                {
                     iObject.GetComponent<Ejector>().launchOnStart = true;
-                }
             }
 
         }
