@@ -39,40 +39,41 @@ public class Collectable : MonoBehaviour
 
     public void Collect()
     {
-        if (itemType == ItemType.InventoryItem)
+        switch(itemType)
         {
-            if (GameManager.Instance.isFull[0] == false || GameManager.Instance.isFull[1] == false)
-            {
-                if (itemName != "") GameManager.Instance.GetInventoryItem(itemName, UIImage);
+            case ItemType.InventoryItem:
+                if (GameManager.Instance.isFull[0] == false || GameManager.Instance.isFull[1] == false)
+                {
+                    if (itemName != "") GameManager.Instance.GetInventoryItem(itemName, UIImage);
 
+                    ObjectDestroy();
+                }
+                break;
+
+            case ItemType.Bug:
+                Player.Instance.bugs += itemAmount;
+                Postprocess.Instance.MultiplyBugEffect();
+                PlayerPrefs.SetInt(gameObject.scene.name + transform.parent.gameObject.name, 1);
                 ObjectDestroy();
-            }
+                break;
 
-        }
-        else if (itemType == ItemType.Bug)
-        {
-            Player.Instance.bugs += itemAmount;
-            Postprocess.Instance.MultiplyBugEffect();
-            PlayerPrefs.SetInt(gameObject.scene.name + transform.parent.gameObject.name, 1);
-            ObjectDestroy();
-        }
-        else if (itemType == ItemType.Health)
-        {
-            if (Player.Instance.health < Player.Instance.maxHealth)
-            {
-                GameManager.Instance.hud.HealthBarHurt();
-                Player.Instance.health += itemAmount;
-            }
-            ObjectDestroy();
-        }
-        else if (itemType == ItemType.Ammo)
-        {
-            if (Player.Instance.ammo < Player.Instance.maxAmmo)
-            {
-                GameManager.Instance.hud.HealthBarHurt();
-                Player.Instance.ammo += itemAmount;
-            }
-            ObjectDestroy();
+            case ItemType.Health:
+                if (Player.Instance.health < Player.Instance.maxHealth)
+                {
+                    GameManager.Instance.hud.HealthBarHurt();
+                    Player.Instance.health += itemAmount;
+                }
+                ObjectDestroy();
+                break;
+
+            case ItemType.Ammo:
+                if (Player.Instance.ammo < Player.Instance.maxAmmo)
+                {
+                    GameManager.Instance.hud.HealthBarHurt();
+                    Player.Instance.ammo += itemAmount;
+                }
+                ObjectDestroy();
+                break;
         }
     }
 }
