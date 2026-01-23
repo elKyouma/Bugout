@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 82380768456914810}
   - component: {fileID: 114588659229448462}
   m_Layer: 13
-  m_Name: Fetchable
+  m_Name: Balloon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -235,11 +235,12 @@ GameObject:
   m_Component:
   - component: {fileID: 4898934289596872}
   - component: {fileID: 212335288536973600}
+  - component: {fileID: 6253820494056042536}
   - component: {fileID: 82006574943078984}
   - component: {fileID: 7192056131207972654}
   - component: {fileID: 3057818840298777500}
   m_Layer: 0
-  m_Name: CollectableGraphic
+  m_Name: BalloonGraphic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -253,8 +254,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1673055232659156}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.46824884, w: -0.88359666}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.00004771496, y: 0.022514643, z: 0}
   m_LocalScale: {x: 0.77715, y: 0.77715, z: 0.77715}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -262,7 +263,7 @@ Transform:
   - {fileID: 7103241022277392162}
   - {fileID: 7102923422430715868}
   m_Father: {fileID: 4000837314628404}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -55.841003}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &212335288536973600
 SpriteRenderer:
   serializedVersion: 2
@@ -312,8 +313,8 @@ SpriteRenderer:
   m_SortingLayer: 6
   m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: dfd6599a6821a48658ed281cdc7bbec5, type: 3}
-  m_Color: {r: 1, g: 0, b: 0.33333334, a: 1}
+  m_Sprite: {fileID: 21300000, guid: cb18f17229bc7634993e771ced52e706, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -322,6 +323,24 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &6253820494056042536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673055232659156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f21944fcf594d49bd637c8539a5f13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ScriptsAssemblyDef::InventoryItem
+  audioSource: {fileID: 82380768456914810}
+  bounceSound: {fileID: 0}
+  collectSounds: []
+  itemAmount: 1
+  itemType: 2
+  UIImage: {fileID: 21300000, guid: 15db79b6d32c9fc41bda53de01c2101c, type: 3}
 --- !u!82 &82006574943078984
 AudioSource:
   m_ObjectHideFlags: 0
@@ -480,7 +499,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.77, y: 1.21}
+    oldSize: {x: 1, y: 2}
     newSize: {x: 0.1, y: 0.1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

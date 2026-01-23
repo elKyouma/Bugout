@@ -78,16 +78,16 @@ public class HUD : MonoBehaviour
 
     void ResetScene()
     {
-        if (GameManager.Instance.inventory.ContainsKey("reachedCheckpoint"))
-        {
-            //Send player back to the checkpoint if they reached one!
-            Player.Instance.ResetLevel();
-        }
-        else
-        {
-            //Reload entire scene
-            SceneManager.LoadScene(loadSceneName);
-        }
+        //if (GameManager.Instance.inventory.ContainsKey("reachedCheckpoint"))
+        //{
+        //    //Send player back to the checkpoint if they reached one!
+        //    Player.Instance.ResetLevel();
+        //}
+        //else
+        //{
+        //    //Reload entire scene
+        //    SceneManager.LoadScene(loadSceneName);
+        //}
     }
 
 }

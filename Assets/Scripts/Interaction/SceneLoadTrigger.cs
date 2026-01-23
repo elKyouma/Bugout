@@ -14,7 +14,7 @@ public class SceneLoadTrigger : MonoBehaviour
         if (col.gameObject == Player.Instance.gameObject)
         {
             GameManager.Instance.hud.loadSceneName = loadSceneName;
-            GameManager.Instance.inventory.Clear();
+            GameManager.Instance.ClearInventory();
             GameManager.Instance.hud.animator.SetTrigger("coverScreen");
             enabled = false;
         }

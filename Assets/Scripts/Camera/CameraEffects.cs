@@ -17,13 +17,13 @@ public class CameraEffects : MonoBehaviour
     void Start()
     {
         //Ensures we can shake the camera using Cinemachine. Don't really worry too much about this weird stuff. It's just Cinemachine's variables.
-        //cinemachineFramingTransposer = virtualCamera.GetComponent<CinemachinePositionComposer>();
+        cinemachineFramingTransposer = virtualCamera.GetComponent<CinemachinePositionComposer>();
 
         //Inform the player what CameraEffect it should be controlling, no matter what scene we are on.
         if (Player.Instance)
             Player.Instance.cameraEffects = this;
-        //virtualCamera = GetComponent<CinemachineCamera>();
-        //multiChannelPerlin = virtualCamera.GetComponent<CinemachineBasicMultiChannelPerlin>();
+        virtualCamera = GetComponent<CinemachineCamera>();
+        multiChannelPerlin = virtualCamera.GetComponent<CinemachineBasicMultiChannelPerlin>();
 
         virtualCamera.Follow = Player.Instance.transform;
     }

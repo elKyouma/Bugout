@@ -2,17 +2,12 @@ using UnityEngine;
 
 /*Used for coins, health, inventory items, and even ammo if you want to create a gun shooting mechanic!*/
 
-public class Collectable : MonoBehaviour
+public abstract class Collectable : MonoBehaviour
 {
-
-    enum ItemType { InventoryItem, Bug, Health, Ammo }; //Creates an ItemType category
-    [SerializeField] ItemType itemType; //Allows us to select what type of item the gameObject is in the inspector
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip bounceSound;
-    [SerializeField] private AudioClip[] collectSounds;
-    [SerializeField] private int itemAmount;
-    [SerializeField] private string itemName; //If an inventory item, what is its name?
-    [SerializeField] private Sprite UIImage; //What image will be displayed if we collect an inventory item?
+    [SerializeField] protected AudioSource audioSource;
+    [SerializeField] protected AudioClip bounceSound;
+    [SerializeField] protected AudioClip[] collectSounds;
+    [SerializeField] protected int itemAmount;
     void Start() => audioSource = GetComponent<AudioSource>();
 
     void OnTriggerEnter2D(Collider2D col)
@@ -27,7 +22,8 @@ public class Collectable : MonoBehaviour
 
     public void ObjectDestroy()
     {
-        GameManager.Instance.audioSource.PlayOneShot(collectSounds[Random.Range(0, collectSounds.Length)], Random.Range(.6f, 1f));
+        if (collectSounds.Length > 0)
+            GameManager.Instance.audioSource.PlayOneShot(collectSounds[Random.Range(0, collectSounds.Length)], Random.Range(.6f, 1f));
         Player.Instance.FlashEffect();
 
         // If my parent has an Ejector script, it means that my parent is actually what needs to be destroyed, along with me, once collected
@@ -37,43 +33,5 @@ public class Collectable : MonoBehaviour
             Destroy(gameObject);
     }
 
-    public void Collect()
-    {
-        switch(itemType)
-        {
-            case ItemType.InventoryItem:
-                if (GameManager.Instance.isFull[0] == false || GameManager.Instance.isFull[1] == false)
-                {
-                    if (itemName != "") GameManager.Instance.GetInventoryItem(itemName, UIImage);
-
-                    ObjectDestroy();
-                }
-                break;
-
-            case ItemType.Bug:
-                Player.Instance.bugs += itemAmount;
-                Postprocess.Instance.MultiplyBugEffect();
-                PlayerPrefs.SetInt(gameObject.scene.name + transform.parent.gameObject.name, 1);
-                ObjectDestroy();
-                break;
-
-            case ItemType.Health:
-                if (Player.Instance.health < Player.Instance.maxHealth)
-                {
-                    GameManager.Instance.hud.HealthBarHurt();
-                    Player.Instance.health += itemAmount;
-                }
-                ObjectDestroy();
-                break;
-
-            case ItemType.Ammo:
-                if (Player.Instance.ammo < Player.Instance.maxAmmo)
-                {
-                    GameManager.Instance.hud.HealthBarHurt();
-                    Player.Instance.ammo += itemAmount;
-                }
-                ObjectDestroy();
-                break;
-        }
-    }
+    protected abstract void Collect();
 }

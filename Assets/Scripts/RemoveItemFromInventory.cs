@@ -8,6 +8,6 @@ public class RemoveItemFromInventory : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.Instance.RemoveInventoryItem(invName);
+        //GameManager.Instance.RemoveInventoryItem(invName);
     }
 }

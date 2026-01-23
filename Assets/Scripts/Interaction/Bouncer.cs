@@ -7,7 +7,7 @@ public class Trampoline : MonoBehaviour
 
     private Animator animator;
     [SerializeField] float appearRange = 1f;
-    [SerializeField] string requiredItem;
+    [SerializeField] ItemType requiredItem;
     [SerializeField] private float playerDifferenceX = 1f;
     [SerializeField] float jumpPower = 1.4f;
 
@@ -27,7 +27,7 @@ public class Trampoline : MonoBehaviour
         playerDifferenceX = Mathf.Abs(Player.Instance.gameObject.transform.position.x - transform.position.x);
         if (playerDifferenceX < appearRange)
         {
-            if (GameManager.Instance.inventory.ContainsKey(requiredItem))
+            if (GameManager.Instance.IsItemInInventory(requiredItem))
             {
                 Appear(true);
             }

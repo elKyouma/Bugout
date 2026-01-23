@@ -96,7 +96,7 @@ public class Player : PhysicsObject
     {
         bugs = PlayerPrefs.GetInt("Bugs", 0);
         Cursor.visible = false;
-        SetUpCheatItems();
+        //SetUpCheatItems();
         health = maxHealth;
         animatorFunctions = GetComponent<AnimatorFunctions>();
         origLocalScale = transform.localScale;
@@ -138,7 +138,7 @@ public class Player : PhysicsObject
             pauseMenu.SetActive(true);
         }
 
-        if (GameManager.Instance.inventory.ContainsKey("RedBalloon") || GameManager.Instance.inventory.ContainsKey("BlueBalloon"))
+        if (GameManager.Instance.IsItemInInventory(ItemType.Balloon))
         {
             gravityModifier = 1.8f;
         }
@@ -147,7 +147,7 @@ public class Player : PhysicsObject
             gravityModifier = 3.2f;
         }
 
-        if (GameManager.Instance.inventory.ContainsKey("RedBalloon") && GameManager.Instance.inventory.ContainsKey("BlueBalloon"))
+        if (GameManager.Instance.DoesInventoryHaveTheSameItems(ItemType.Balloon))
         {
             gravityModifier = -1.5f;
         }
@@ -159,7 +159,7 @@ public class Player : PhysicsObject
             if (Input.GetButtonDown("Jump") && animator.GetBool("grounded") == true && !jumping)
             {
                 animator.SetBool("pounded", false);
-                if (GameManager.Instance.inventory.ContainsKey("RedBalloon") || GameManager.Instance.inventory.ContainsKey("BlueBalloon"))
+                if (GameManager.Instance.IsItemInInventory(ItemType.Balloon))
                 {
                     Jump(1.0f);
                 }
@@ -178,49 +178,37 @@ public class Player : PhysicsObject
             }
 
 
-            if (GameManager.Instance.isFull[0] == true || GameManager.Instance.isFull[1] == true)
+            if (Input.GetKeyDown(KeyCode.Z))
             {
-                if (Input.GetKeyDown(KeyCode.Z))
+                var (item, success) = GameManager.Instance.TryGetItemFromInventorySlot(0);
+                if (success)
                 {
-                    foreach (string name in GameManager.Instance.keys)
+                    switch (item)
                     {
-                        if (GameManager.Instance.inventory[name].slotNumber == 0)
-                        {
-                            //Punch
-                            if (name == "Melee") MeleeAction();
-                            //Baloon
-                            if (name == "RedBalloon" || name == "BlueBalloon") BalloonAction(name);
-                            //Beer
-                            if (name == "LightBeer" || name == "LightBeerCopy") BeerAction(name);
-                            //Dynamite
-                            if (name == "Dynamite") DynamiteAction(name);
-
-                            break;
-                        }
-                    }
-                }
-
-                if (Input.GetKeyDown(KeyCode.X))
-                {
-                    foreach (string name in GameManager.Instance.keys)
-                    {
-                        if (GameManager.Instance.inventory[name].slotNumber == 1)
-                        {
-                            //Punch
-                            if (name == "Melee") MeleeAction();
-                            //Baloon
-                            if (name == "RedBalloon" || name == "BlueBalloon") BalloonAction(name);
-                            //Beer
-                            if (name == "LightBeer" || name == "LightBeerCopy") BeerAction(name);
-                            //Dynamite
-                            if (name == "Dynamite") DynamiteAction(name);
-
-                            break;
-                        }
+                        case ItemType.Beer: BeerAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(0); break;
+                        case ItemType.Balloon: BalloonAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(0); break;
+                        case ItemType.Dynamite: DynamiteAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(0); break;
+                        case ItemType.Knife: MeleeAction(); break;
+                        default: break;
                     }
                 }
             }
 
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                var (item, success) = GameManager.Instance.TryGetItemFromInventorySlot(1);
+                if (success)
+                {
+                    switch (item)
+                    {
+                        case ItemType.Beer: BeerAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(1); break;
+                        case ItemType.Balloon: BalloonAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(1); break;
+                        case ItemType.Dynamite: DynamiteAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(1); break;
+                        case ItemType.Knife: MeleeAction(); break;
+                        default: break;
+                    }
+                }
+            }
 
             //Secondary attack (currently shooting) with right click
             if (Input.GetMouseButtonDown(1))
@@ -260,12 +248,8 @@ public class Player : PhysicsObject
             animator.SetFloat("velocityY", velocity.y);
             animator.SetInteger("attackDirectionY", (int)Input.GetAxis("VerticalDirection"));
             animator.SetInteger("moveDirection", (int)Input.GetAxis("HorizontalDirection"));
-            animator.SetBool("hasChair", GameManager.Instance.inventory.ContainsKey("chair"));
+            //animator.SetBool("hasChair", GameManager.Instance.inventory.ContainsKey("chair"));
             targetVelocity = move * maxSpeed;
-
-
-
-
         }
         else
         {
@@ -284,19 +268,19 @@ public class Player : PhysicsObject
         }
     }
 
-    public void BalloonAction(string name)
+    public void BalloonAction()
     {
-        GameManager.Instance.RemoveInventoryItem(name);
+        //GameManager.Instance.RemoveInventoryItem(name);
         audioSource.PlayOneShot(balloonBreakSound);
-        var objs = GetComponentsInChildren<AddObjToInventory>();
-        foreach (var obj in objs)
-        {
-            if (obj.invName == name)
-                obj.gameObject.SetActive(false);
-        }
+        //var objs = GetComponentsInChildren<AddObjToInventory>();
+        //foreach (var obj in objs)
+        //{
+        //    if (obj.invName == name)
+        //        obj.gameObject.SetActive(false);
+        //}
     }
 
-    public void BeerAction(string name)
+    public void BeerAction()
     {
         drinkedBeer++;
         if (drinkedBeer == 2)
@@ -304,30 +288,13 @@ public class Player : PhysicsObject
 
         drunkEffectActive = true;
         audioSource.PlayOneShot(drinkingSound);
-
-        //WHY?!?!?!?!?
-        if (name == "LightBeer")
-        {
-            foreach (string kname in GameManager.Instance.keys)
-            {
-                if (kname == "LightBeerCopy")
-                {
-                    GameManager.Instance.RemoveInventoryItem(kname);
-                    return;
-                }
-            }
-        }
-
-        GameManager.Instance.RemoveInventoryItem(name);
     }
 
-    public void DynamiteAction(string name)
+    public void DynamiteAction()
     {
         if (Vector2.Distance(transform.position, explosives.transform.position) < 5)
             GameManager.Instance.EndGame("BigBoom");
-        GameManager.Instance.RemoveInventoryItem(name);
         Instantiate(dynamitePrefab, null);
-
     }
 
     public void SetGroundType()
@@ -488,7 +455,7 @@ public class Player : PhysicsObject
 
     public void PunchEffect()
     {
-        //GameManager.Instance.audioSource.PlayOneShot(punchSound);
+        GameManager.Instance.audioSource.PlayOneShot(punchSound);
         cameraEffects.Shake(100, 1f);
     }
 
@@ -541,37 +508,37 @@ public class Player : PhysicsObject
     public void Shoot(bool equip)
     {
         //Flamethrower ability
-        if (GameManager.Instance.inventory.ContainsKey("flamethrower"))
-        {
-            if (equip)
-            {
-                if (!shooting)
-                {
-                    animator.SetBool("shooting", true);
-                    GameManager.Instance.audioSource.PlayOneShot(equipSound);
-                    flameParticlesAudioSource.Play();
-                    shooting = true;
-                }
-            }
-            else
-            {
-                if (shooting)
-                {
-                    animator.SetBool("shooting", false);
-                    flameParticlesAudioSource.Stop();
-                    GameManager.Instance.audioSource.PlayOneShot(holsterSound);
-                    shooting = false;
-                }
-            }
-        }
+        //if (GameManager.Instance.inventory.ContainsKey("flamethrower"))
+        //{
+        //    if (equip)
+        //    {
+        //        if (!shooting)
+        //        {
+        //            animator.SetBool("shooting", true);
+        //            GameManager.Instance.audioSource.PlayOneShot(equipSound);
+        //            flameParticlesAudioSource.Play();
+        //            shooting = true;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (shooting)
+        //        {
+        //            animator.SetBool("shooting", false);
+        //            flameParticlesAudioSource.Stop();
+        //            GameManager.Instance.audioSource.PlayOneShot(holsterSound);
+        //            shooting = false;
+        //        }
+        //    }
+        //}
     }
 
-    public void SetUpCheatItems()
-    {
-        //Allows us to get various items immediately after hitting play, allowing for testing. 
-        for (int i = 0; i < cheatItems.Length; i++)
-            GameManager.Instance.GetInventoryItem(cheatItems[i], null);
-    }
+    //public void SetUpCheatItems()
+    //{
+    //    //Allows us to get various items immediately after hitting play, allowing for testing. 
+    //    for (int i = 0; i < cheatItems.Length; i++)
+    //        GameManager.Instance.GetInventoryItem(cheatItems[i], null);
+    //}
 
     private void OnCollisionExit2D(Collision2D collision)
     {

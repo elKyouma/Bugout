@@ -6,22 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public class Item
-    {
-        public Sprite itemImage;
-        public int slotNumber;
-        public Item(Sprite sprite, int number)
-        {
-            itemImage = sprite;
-            slotNumber = number;
-        }
-    }
     public AudioSource audioSource; //A primary audioSource a large portion of game sounds are passed through
     public DialogueBoxController dialogueBoxController;
     public HUD hud; //A reference to the HUD holding your health UI, coins, dialogue, etc.
-    public Dictionary<string, Item> inventory = new Dictionary<string, Item>();
-    public Dictionary<string, Item>.KeyCollection keys;
-    public bool[] isFull;
+    public Inventory inventory = new Inventory();
     private static GameManager instance;
     [SerializeField] public AudioTrigger gameMusic;
     [SerializeField] public AudioTrigger gameAmbience;
@@ -39,6 +27,15 @@ public class GameManager : MonoBehaviour
     private Dictionary<string, Ending> endingDict = new Dictionary<string, Ending>();
     public Dictionary<string, int> gameCompletion = new Dictionary<string, int>();//0 nie zrobiono, 1 zrobiono
     public Dictionary<string, int> reward = new Dictionary<string, int>();//0 nie zrobiono, 1 zrobiono
+    public static GameManager Instance
+    {
+        get
+        {
+            if (instance == null)
+                instance = FindFirstObjectByType<GameManager>();
+            return instance;
+        }
+    }
 
     void Awake()
     {
@@ -51,55 +48,50 @@ public class GameManager : MonoBehaviour
             reward[kvp.key] = kvp.bugs;
         }
     }
-    public static GameManager Instance
-    {
-        get
-        {
-            if (instance == null)
-                instance = FindFirstObjectByType<GameManager>();
-            return instance;
-        }
-    }
 
     void Start() => audioSource = GetComponent<AudioSource>();
-    public void GetInventoryItem(string name, Sprite image)
+
+    public bool TryAddItemToInventory(Item item)
     {
-        for (int i = 0; i < isFull.Length; i++)
-        {
-            if (!isFull[i])
-            {
-                Item item = new Item(image, i);
-                while (inventory.ContainsKey(name))
-                {
-                    name += "Copy";
-                }
-                inventory.Add(name, item);
-                keys = inventory.Keys;
-                isFull[i] = true;
-                if (image != null)
-                {
-                    hud.SetInventoryImage(inventory[name].itemImage, i);
-                }
-                break;
-            }
+        var (slotID, success) = inventory.TryAddItem(item.type);
+        if (!success)
+            return false;
 
-        }
-
+        hud.SetInventoryImage(item.UiImage, slotID);
+        return true;
     }
 
-    public void RemoveInventoryItem(string name)
+    public (ItemType item, bool success) TryGetItemFromInventorySlot(int slotID)
     {
-        hud.SetInventoryImage(hud.blankUI, inventory[name].slotNumber);
-        isFull[inventory[name].slotNumber] = false;
-        inventory.Remove(name);
-        keys = inventory.Keys;
+        var (item, success) = inventory.TryGetItemFromSlot(slotID);
+        if (!success)
+            return (ItemType.None, false);
 
+        return (item, true);
     }
+    public bool TryRemoveItemFromInventorySlot(int slotID)
+    {
+        var success = inventory.TryRemoveItemFromSlot(slotID);
+        if (!success)
+            return false;
+
+        hud.SetInventoryImage(hud.blankUI, slotID);
+        return true;
+    }
+    public (int slotID, bool success) TryGetItemIventorySlotID(ItemType item) => inventory.TryGetItemSlotID(item);
+
+    public bool IsItemInInventory(ItemType item)
+    {
+        var (slotID, success) = inventory.TryGetItemSlotID(item);
+        return success;
+    }
+
+    public bool DoesInventoryHaveTheSameItems(ItemType item) => inventory.AreBothSlotsOccupiedByItem(item);
 
     public void ClearInventory()
     {
-        inventory.Clear();
-        hud.SetInventoryImage(hud.blankUI, 0);
+        inventory.TryGetItemFromSlot(0);
+        inventory.TryGetItemFromSlot(1);
     }
 
     public void EndGame(string ending)

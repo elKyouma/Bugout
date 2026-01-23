@@ -6,7 +6,7 @@ public class TwoBalloonsEnding : MonoBehaviour
 {
     private void OnEnable()
     {
-        if(GameManager.Instance.inventory.ContainsKey("RedBalloon"))
+        if (GameManager.Instance.IsItemInInventory(ItemType.Balloon))
         {
             StartCoroutine("ChangeScene");
         }
