@@ -35,7 +35,7 @@ namespace VisualDirector
             return _nextTcs.Task;
         }
 
-        public Task ChoiceDetected()
+        public Task<int> ChoiceDetected()
         {
             if (_choiveTcs == null || _choiveTcs.Task.IsCompleted)
                 _choiveTcs = new TaskCompletionSource<int>();

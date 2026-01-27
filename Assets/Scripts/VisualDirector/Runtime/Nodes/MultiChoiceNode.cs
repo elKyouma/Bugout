@@ -25,7 +25,9 @@ namespace VisualDirector
             //ctx.choice3.text = runtimeNode.choide3;
             //ctx.choice4.text = runtimeNode.choide4;
             ctx.SetChoiceAmount(runtimeNode.choide4 != "" ? 4 : runtimeNode.choide3 != "" ? 3 : runtimeNode.choide2 != "" ? 2 : 1);
-            await ctx.InputProvider.InputDetected();
+            var task = ctx.InputProvider.ChoiceDetected();
+            await task;
+            ctx.choiceId = task.Result;
             ctx.SetChoiceAmount(0); // Hide choices after selection
         }
     }

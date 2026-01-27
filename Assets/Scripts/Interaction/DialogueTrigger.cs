@@ -52,6 +52,7 @@ public class DialogueTrigger : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D col)
     {
+        Cursor.visible = true;
         if (instantGet)
             InstantGet();
 

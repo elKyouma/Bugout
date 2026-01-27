@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -48,64 +49,6 @@ public class DialogueBoxController : MonoBehaviour
     private GameObject activateObjectChoice1;
     private GameObject activateObjectChoice2;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (activated)
-        {
-            //Submit
-            //Check for key press
-            if (((Input.GetAxis("Submit") > 0) || (Input.GetAxis("Jump") > 0)) && !submitKeyIsDown)
-            {
-                submitKeyIsDown = true;
-                if (!typing)
-                {
-                    if (index < choiceLocation || (extendConvo && index < characterDiologue.Length - 1))
-                    {
-                        if (ableToAdvance)
-                            StartCoroutine(Advance());
-                    }
-                    else
-                        StartCoroutine(Close());
-                    if (index == 0)
-                        ableToAdvance = true;
-                }
-            }
-
-            //Check for first release to ensure we can't spam
-            if (submitKeyIsDown && Input.GetAxis("Submit") < .001 && Input.GetAxis("Jump") < .001)
-            {
-                if (!typing)
-                {
-                    submitKeyIsDown = false;
-                    if (index == 0)
-                        ableToAdvance = true;
-                }
-            }
-
-            //Choices
-            //Check for key press
-            if ((Input.GetAxis("Horizontal") != 0) && !horizontalKeyIsDown && animator.GetBool("hasChoices") == true)
-            {
-                if (animator.GetInteger("choiceSelection") == 1)
-                {
-                    animator.SetInteger("choiceSelection", 2);
-                    extendConvo = true;
-                }
-                else
-                {
-                    extendConvo = false;
-                    animator.SetInteger("choiceSelection", 1);
-                }
-                audioSource.PlayOneShot(selectionSound);
-                horizontalKeyIsDown = true;
-            }
-
-            //Check for first release to ensure we can't spam
-            if (horizontalKeyIsDown && Input.GetAxis("Horizontal") == 0)
-                horizontalKeyIsDown = false;
-        }
-    }
 
     public void Appear(string fName, string characterName, DialogueTrigger dTrigger, bool useItemAfterClose, AudioClip[] audioL, AudioClip[] audioC, string finishTalkingAnimBool, GameObject finishTalkingActivateGObject, string finishTalkingActivateGOString, bool r,
                         GameObject activateObjectChoice1, GameObject activateObjectChoice2)
@@ -264,7 +207,7 @@ public class DialogueBoxController : MonoBehaviour
             }
 
             textMesh.text += c;
-            audioSource.PlayOneShot(typeSounds[Random.Range(0, typeSounds.Length)], Random.Range(.3f, .5f));
+            audioSource.PlayOneShot(typeSounds[UnityEngine.Random.Range(0, typeSounds.Length)], UnityEngine.Random.Range(.3f, .5f));
             yield return wait;
         }
     }

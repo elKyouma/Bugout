@@ -58,20 +58,20 @@ namespace VisualDirector.Editor
                 if (lastRuntimeNode == null)
                     continue;
 
-                foreach (var nextModel in GetNextNodes(modelNode))
+                foreach (var nextModel in GetNextNodes(modelNode).Where(n => n != null).ToList())
                 {
                     if (modelToRuntime.TryGetValue(nextModel, out var nextRuntime))
                         lastRuntimeNode.Next.Add(nextRuntime.First());
                 }
             }
 
+            //runtimeAsset.Nodes.AddRange(modelToRuntime.Values.SelectMany(v => v));
             ctx.AddObjectToAsset("RuntimeAsset", runtimeAsset);
             ctx.SetMainObject(runtimeAsset);
         }
 
         static IEnumerable<INode> GetNextNodes(INode currentNode)
         {
-
             if (currentNode is MultiChoiceNode)
             {
                 var outputs = new List<IPort>
@@ -83,12 +83,17 @@ namespace VisualDirector.Editor
                 };
 
                 foreach (var port in outputs)
-                    yield return port.GetNode();
+                {
+                    if (port == null || port.firstConnectedPort == null)
+                        continue;
+
+                    yield return port.firstConnectedPort.GetNode();
+                }
             }
             else
             {
                 var outputPort = currentNode.GetOutputPortByName(VisualDirectorNode.EXECUTION_PORT_DEFAULT_NAME);
-                yield return outputPort.GetNode();
+                yield return outputPort.firstConnectedPort.GetNode();
             }
         }
 
@@ -110,8 +115,8 @@ namespace VisualDirector.Editor
                         LocationIndex = (int)GetInputPortValue<SetDialogueNode.Location>(setDialogueNodeModel.GetInputPortByName(SetDialogueNode.IN_PORT_LOCATION_NAME)),
                         DialogueText = GetInputPortValue<string>(setDialogueNodeModel.GetInputPortByName(SetDialogueNode.IN_PORT_DIALOGUE_NAME))
                     });
-
-                    returnedNodes.Add(new WaitForInputRuntimeNode());
+                    //returnedNodes.Add(new WaitForInputRuntimeNode());
+                    //returnedNodes[0].Next.Add(returnedNodes[1]); // kinda hacky way to link them directly here
                     break;
 
                 case WaitForInputNode _:

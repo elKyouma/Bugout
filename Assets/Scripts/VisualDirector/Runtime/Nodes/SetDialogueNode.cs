@@ -100,6 +100,8 @@ namespace VisualDirector
             }
 
             label.text = dialogueText;
+
+            await inputProvider.InputDetected();
         }
     }
 }

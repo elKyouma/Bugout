@@ -10,6 +10,7 @@ namespace VisualDirector.Editor
         public const string IN_PORT_ACTOR_SPRITE_NAME = "ActorSprite";
         public const string IN_PORT_LOCATION_NAME = "ActorLocation";
         public const string IN_PORT_DIALOGUE_NAME = "Dialogue";
+        public const string IN_PORT_SOUND_NAME = "Sound";
 
         public enum Location
         {
@@ -32,7 +33,8 @@ namespace VisualDirector.Editor
                 .Build();
             context.AddInputPort<string>(IN_PORT_DIALOGUE_NAME)
                 .Build();
-   
+            context.AddInputPort<ISound>(IN_PORT_SOUND_NAME)
+                .Build();
         }
     }
 }

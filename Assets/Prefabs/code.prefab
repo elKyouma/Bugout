@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 184958049418492491}
   - component: {fileID: 5953615480030364052}
   - component: {fileID: 4806388864394584395}
-  - component: {fileID: 6591598866365467748}
   - component: {fileID: 2067635169613297247}
   - component: {fileID: 7680785525024073575}
   - component: {fileID: 2169839827910252801}
@@ -142,26 +141,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 7, y: 7}
   m_EdgeRadius: 0
---- !u!114 &6591598866365467748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4639971043538115058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08d405962f67e496a84ebd5037ff219c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemType: 1
-  audioSource: {fileID: 0}
-  bounceSound: {fileID: 8300000, guid: 4606c2e00ff414c58b47cffcae0c3a4e, type: 3}
-  collectSounds:
-  - {fileID: 8300000, guid: 547ff3e60e7034deab642a204a1443d5, type: 3}
-  itemAmount: 1
-  itemName: 
-  UIImage: {fileID: 0}
 --- !u!82 &2067635169613297247
 AudioSource:
   m_ObjectHideFlags: 0

@@ -5,6 +5,6 @@ namespace VisualDirector
     public interface IVisualDirectorInputProvider
     {
         Task InputDetected();
-        Task ChoiceDetected();
+        Task<int> ChoiceDetected();
     }
 }
