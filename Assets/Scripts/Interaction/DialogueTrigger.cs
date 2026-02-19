@@ -2,7 +2,7 @@ using UnityEngine;
 using VisualDirector;
 /*Triggers a dialogue conversation, passing unique commands and information to the dialogue box and inventory system for fetch quests, etc.*/
 
-public class DialogueTrigger : MonoBehaviour, IDisabable
+public class DialogueTrigger : MonoBehaviour, IDisabable, IDialogueController
 {
 
     public VisualDirectorRuntimeGraph vs; //optional reference, if there is use new system instead of legacy dialogue system
@@ -159,8 +159,7 @@ public class DialogueTrigger : MonoBehaviour, IDisabable
         }
     }
 
-    public void Disable()
-    {
-        completed = true;
-    }
+    public void Disable() => completed = true;
+
+    public void UpdateDialogue(VisualDirectorRuntimeGraph vs) => this.vs = vs;
 }

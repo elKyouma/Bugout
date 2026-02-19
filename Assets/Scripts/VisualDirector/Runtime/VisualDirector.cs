@@ -20,7 +20,7 @@ namespace VisualDirector
         public Animator animator;
         public AudioSource audioSource;
 
-        public IDisabable CurrentInteractable;
+        public IDialogueController CurrentInteractable;
         public IGameManager GameManager;
 
         public int choiceId = 0;
@@ -42,7 +42,7 @@ namespace VisualDirector
             else
                 Debug.LogError($"Unsupported choice amount: {choiceAmount}");
         }
-        public async void Execute(VisualDirectorRuntimeGraph runtimeGraph, IDisabable currentInteractable, IGameManager gameManager)
+        public async void Execute(VisualDirectorRuntimeGraph runtimeGraph, IDialogueController currentInteractable, IGameManager gameManager)
         {
             CurrentInteractable = currentInteractable;
             GameManager = gameManager;
@@ -53,6 +53,10 @@ namespace VisualDirector
             var multiChoiceExecutor = new MultiChoiceExecutor();
             var disableInteractivityExecutor = new DisableInteractivityExecutor();
             var teleportExecutor = new TeleportExecutor();
+            var updateDialogueExecutor = new UpdateDialogueExecutor();
+            var requireExecutor = new RequireExecutor();
+            var giveItemExecutor = new GiveItemExecutor();
+            var takeItemExecutor = new TakeItemExecutor();
 
             var node = runtimeGraph.Nodes[0];
             while (true)
@@ -78,11 +82,23 @@ namespace VisualDirector
                     case TeleportRuntimeNode teleportNode:
                         await teleportExecutor.ExecuteAsync(teleportNode, this);
                         break;
+                    case UpdateDialogueRuntimeNode updateDialogueNode:
+                        await updateDialogueExecutor.ExecuteAsync(updateDialogueNode, this);
+                        break;
+                    case RequireRuntimeNode requireNode:
+                        await requireExecutor.ExecuteAsync(requireNode, this);
+                        break;
+                    case GiveItemRuntimeNode giveItemNode:
+                        await giveItemExecutor.ExecuteAsync(giveItemNode, this);
+                        break;
+                    case TakeItemRuntimeNode takeItemNode:
+                        await takeItemExecutor.ExecuteAsync(takeItemNode, this);
+                        break;
                     default:
                         Debug.LogError($"No executor found for node type: {node.GetType()}");
                         break;
                 }
-                if (node.Next.Count > 0)
+                if (node.Next.Count > choiceId)
                     node = node.Next[choiceId];
                 else
                     break;

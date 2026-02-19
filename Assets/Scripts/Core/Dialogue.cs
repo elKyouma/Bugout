@@ -22,23 +22,6 @@ public class Dialogue : MonoBehaviour
             "Key used!"
         });
 
-        //NPC
-        dialogue.Add("SellerA", new string[] {
-            "Hi there!",
-            "Wanna buy some balloons?",
-            "What!?",
-            "You don't have any money?",
-            "If you get me something to drink I'll give you one"
-        });
-
-        dialogue.Add("SellerB", new string[] {
-            "Hi there!",
-            "Wanna buy some balloons?",
-            "What!?",
-            "You don't have any money?",
-            "If you get me something to drink I'll give you one"
-        });
-
         dialogue.Add("SellerBChoice1", new string[] {
             "",
             "",
@@ -93,16 +76,6 @@ public class Dialogue : MonoBehaviour
             "Access granted"
         });
 
-        dialogue.Add("ElevatorAUp", new string[] {
-            "Where do you wanna go?",
-        });
-        dialogue.Add("ElevatorAMiddle", new string[] {
-            "Where do you wanna go?",
-        });
-        dialogue.Add("ElevatorABottom", new string[] {
-            "Where do you wanna go?",
-        });
-
         dialogue.Add("ElevatorBUp", new string[] {
             "Where do you wanna go?",
         });
@@ -111,27 +84,6 @@ public class Dialogue : MonoBehaviour
         });
         dialogue.Add("ElevatorBBottom", new string[] {
             "Where do you wanna go?",
-        });
-
-        dialogue.Add("ElevatorAUpChoice1", new string[] {
-            "Inside"
-        });
-        dialogue.Add("ElevatorAUpChoice2", new string[] {
-            "Street"
-        });
-
-        dialogue.Add("ElevatorAMiddleChoice1", new string[] {
-            "Roof"
-        });
-        dialogue.Add("ElevatorAMiddleChoice2", new string[] {
-            "Street"
-        });
-
-        dialogue.Add("ElevatorABottomChoice1", new string[] {
-            "Roof"
-        });
-        dialogue.Add("ElevatorABottomChoice2", new string[] {
-            "Inside"
         });
 
         dialogue.Add("ElevatorBUpChoice1", new string[] {

@@ -104,6 +104,11 @@ namespace VisualDirector.Editor
                     yield return port.firstConnectedPort.GetNode();
                 }
             }
+            else if (currentNode is RequireNode)
+            {
+                yield return currentNode.GetOutputPortByName(RequireNode.EXECUTION_PORT_SUCCESS).firstConnectedPort.GetNode();
+                yield return currentNode.GetOutputPortByName(RequireNode.EXECUTION_PORT_FAIL).firstConnectedPort.GetNode();
+            }
             else
             {
                 var outputPort = currentNode.GetOutputPortByName(VisualDirectorNode.EXECUTION_PORT_DEFAULT_NAME);
@@ -161,21 +166,54 @@ namespace VisualDirector.Editor
                     break;
 
                 case DisableInteractivityNode node:
-                    node.GetNodeOption(0).TryGetValue(out DisableInteractivityNode.InteractivityType type);// do it base on this, not null value
-                    string tag = "";
-                    if (type == InteractivityType.ByTag)
-                        tag = GetInputPortValue<string>(nodeModel.GetInputPortByName(DisableInteractivityNode.IN_PORT_TAG_NAME));
-
-                    returnedNodes.Add(new DisableInteractivityRuntimeNode
                     {
-                        Tag = tag
-                    });
+                        node.GetNodeOption(0).TryGetValue(out DisableInteractivityNode.InteractivityType type);// do it base on this, not null value
+                        string tag = "";
+                        if (type == InteractivityType.ByTag)
+                            tag = GetInputPortValue<string>(nodeModel.GetInputPortByName(DisableInteractivityNode.IN_PORT_TAG_NAME));
+
+                        returnedNodes.Add(new DisableInteractivityRuntimeNode
+                        {
+                            Tag = tag
+                        });
+                    }
                     break;
                 case TeleportNode node:
                     returnedNodes.Add(new TeleportRuntimeNode
                     {
                         Tag = GetInputPortValue<TeleportTag.Tag>(nodeModel.GetInputPortByName(TeleportNode.IN_PORT_TELEPORT_TAG))
                     });
+                    break;
+                case UpdateDialogueNode node:
+                    returnedNodes.Add(new UpdateDialogueRuntimeNode
+                    {
+                        Vs = GetInputPortValue<VisualDirectorRuntimeGraph>(nodeModel.GetInputPortByName(UpdateDialogueNode.IN_PORT_DIALOGUE_NAME))
+                    });
+                    break;
+                case GiveItemNode node:
+                    returnedNodes.Add(new GiveItemRuntimeNode
+                    {
+                        ItemType = GetInputPortValue<IGameManager.ItemType>(nodeModel.GetInputPortByName(GiveItemNode.IN_PORT_ITEM_TYPE_NAME))
+                    });
+                    break;
+                case TakeItemNode node:
+                    returnedNodes.Add(new TakeItemRuntimeNode
+                    {
+                        ItemType = GetInputPortValue<IGameManager.ItemType>(nodeModel.GetInputPortByName(TakeItemNode.IN_PORT_ITEM_TYPE_NAME))
+                    });
+                    break;
+                case RequireNode node:
+                    {
+                        node.GetNodeOption(0).TryGetValue(out RequireNode.RequireType type);// do it base on this, not null value
+                        IGameManager.ItemType itemType = IGameManager.ItemType.None;
+                        if (type == RequireNode.RequireType.ITEM)
+                            itemType = GetInputPortValue<IGameManager.ItemType>(nodeModel.GetInputPortByName(RequireNode.IN_PORT_ITEM_TYPE_NAME));
+                        returnedNodes.Add(new RequireRuntimeNode
+                        {
+                            ItemType = itemType,
+                            Number = GetInputPortValue<int>(nodeModel.GetInputPortByName(RequireNode.IN_PORT_NUMBER_NAME))
+                        });
+                    }
                     break;
                 default:
                     throw new ArgumentException($"Unsupported node model type: {nodeModel.GetType()}");

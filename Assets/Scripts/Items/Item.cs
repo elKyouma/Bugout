@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum ItemType { None, Beer, Balloon, Dynamite, Knife, Key };
+public enum ItemType { None, Beer, Balloon, Dynamite, Knife, Key }; // WHEN ADDING NEW ITEM TYPES, MAKE SURE TO UPDATE THE ITEMTYPE ENUM INSIDE VDG
 public class Item
 {
     public ItemType type { get; set; }

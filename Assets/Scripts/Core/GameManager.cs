@@ -137,4 +137,35 @@ public class GameManager : MonoBehaviour, IGameManager
     }
 
     public void TeleportPlayerToLocation(TeleportTag.Tag tag) => Player.Instance.transform.position = teleportLocations[tag];
+
+    public bool HasItem(IGameManager.ItemType item, int number)
+    {
+        if (number == 0 || number > 2)
+        {
+            Debug.LogError("Invalid number of items requested: " + number);
+            return false;
+        }  
+        else if (number == 1)
+            return IsItemInInventory((ItemType)item);
+        else
+            return DoesInventoryHaveTheSameItems((ItemType)item);
+
+    }
+
+    public bool HasBugs(int number) => Player.Instance.bugs >= number;
+
+    public void GiveItem(IGameManager.ItemType item)
+    {
+        if (!TryAddItemToInventory(new Item((ItemType)item, null)))
+            Debug.LogError("Failed to add item to inventory: " + item);
+    }
+
+    public void TakeItem(IGameManager.ItemType item)
+    {
+        var (slotId, succeess )= TryGetItemIventorySlotID((ItemType)item);
+        if(succeess)
+            TryRemoveItemFromInventorySlot(slotId);
+        else
+            Debug.LogError("Failed to remove item from inventory: " + item);
+    }
 }
