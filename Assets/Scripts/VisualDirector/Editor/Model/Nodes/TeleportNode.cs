@@ -11,7 +11,7 @@ namespace VisualDirector.Editor
         protected override void OnDefinePorts(IPortDefinitionContext context)
         {
             AddInputOutputExecutionPorts(context);
-            context.AddInputPort<string>(IN_PORT_TELEPORT_TAG).Build();
+            context.AddInputPort<TeleportTag.Tag>(IN_PORT_TELEPORT_TAG).WithDisplayName("Teleport Tag").Build();
         }
     }
 }

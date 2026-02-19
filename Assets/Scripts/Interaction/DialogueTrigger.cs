@@ -66,14 +66,14 @@ public class DialogueTrigger : MonoBehaviour, IDisabable
                     if (!vs)
                         GameManager.Instance.dialogueBoxController.Appear(dialogueStringA, characterName, this, false, audioLinesA, audioChoices, finishTalkingAnimatorBool, finishTalkingActivateObject, finishTalkingActivateObjectString, repeat, activateObjectChoice1, activateObjectChoice2);
                     else
-                        FindFirstObjectByType<VisualDirector.VisualDirector>().Execute(vs, this);
+                        FindFirstObjectByType<VisualDirector.VisualDirector>().Execute(vs, this, GameManager.Instance);
                 else if (requiredBugs == 0 && GameManager.Instance.IsItemInInventory(requiredItem) || (requiredBugs != 0 && Player.Instance.bugs >= requiredBugs))
                 {
                     if (dialogueStringB != "")
                         if (!vs)
                             GameManager.Instance.dialogueBoxController.Appear(dialogueStringB, characterName, this, true, audioLinesB, audioChoices, "", null, "", repeat, activateObjectChoice1, activateObjectChoice2);
                         else
-                            FindFirstObjectByType<VisualDirector.VisualDirector>().Execute(vs, this);
+                            FindFirstObjectByType<VisualDirector.VisualDirector>().Execute(vs, this, GameManager.Instance);
                     else
                         UseItem();
                 }

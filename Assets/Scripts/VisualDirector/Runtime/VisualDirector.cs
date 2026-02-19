@@ -20,7 +20,8 @@ namespace VisualDirector
         public Animator animator;
         public AudioSource audioSource;
 
-        public IDisabable currentInteractable;
+        public IDisabable CurrentInteractable;
+        public IGameManager GameManager;
 
         public int choiceId = 0;
 
@@ -34,22 +35,24 @@ namespace VisualDirector
 
         public void SetChoiceAmount(int choiceAmount)
         {
-            if(choiceAmount == 2)
+            if (choiceAmount == 2)
                 animator.SetBool("hasChoices", true);
-            else if(choiceAmount == 0)
+            else if (choiceAmount == 0)
                 animator.SetBool("hasChoices", false);
             else
                 Debug.LogError($"Unsupported choice amount: {choiceAmount}");
         }
-        public async void Execute(VisualDirectorRuntimeGraph runtimeGraph, IDisabable currentInteractable)
+        public async void Execute(VisualDirectorRuntimeGraph runtimeGraph, IDisabable currentInteractable, IGameManager gameManager)
         {
-            this.currentInteractable = currentInteractable;
+            CurrentInteractable = currentInteractable;
+            GameManager = gameManager;
             animator.SetBool("active", true);
-            
+
             var setDialogueExecutor = new SetDialogueExecutor();
             var waitForInputExecutor = new WaitForInputExecutor();
             var multiChoiceExecutor = new MultiChoiceExecutor();
             var disableInteractivityExecutor = new DisableInteractivityExecutor();
+            var teleportExecutor = new TeleportExecutor();
 
             var node = runtimeGraph.Nodes[0];
             while (true)
@@ -71,6 +74,9 @@ namespace VisualDirector
                         break;
                     case DisableInteractivityRuntimeNode disableInteractivityRuntimeNode:
                         await disableInteractivityExecutor.ExecuteAsync(disableInteractivityRuntimeNode, this);
+                        break;
+                    case TeleportRuntimeNode teleportNode:
+                        await teleportExecutor.ExecuteAsync(teleportNode, this);
                         break;
                     default:
                         Debug.LogError($"No executor found for node type: {node.GetType()}");

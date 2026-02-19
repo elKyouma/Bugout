@@ -171,7 +171,12 @@ namespace VisualDirector.Editor
                         Tag = tag
                     });
                     break;
-
+                case TeleportNode node:
+                    returnedNodes.Add(new TeleportRuntimeNode
+                    {
+                        Tag = GetInputPortValue<TeleportTag.Tag>(nodeModel.GetInputPortByName(TeleportNode.IN_PORT_TELEPORT_TAG))
+                    });
+                    break;
                 default:
                     throw new ArgumentException($"Unsupported node model type: {nodeModel.GetType()}");
             }

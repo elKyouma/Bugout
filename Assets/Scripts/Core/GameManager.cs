@@ -1,12 +1,15 @@
+using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utility;
+using VisualDirector;
 
 /*Manages inventory, keeps several component references, and any other future control of the game itself you may need*/
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IGameManager
 {
     private static GameManager instance;
 
@@ -28,6 +31,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private List<EndingClass> endingList = new List<EndingClass>();
     private Dictionary<string, (EndingSO, Status, int)> endingDict = new Dictionary<string, (EndingSO, Status, int)>();
+    
+    private Dictionary<TeleportTag.Tag, Vector3> teleportLocations = new Dictionary<TeleportTag.Tag, Vector3>();
+
     public static GameManager Instance
     {
         get
@@ -44,6 +50,14 @@ public class GameManager : MonoBehaviour
 
         foreach (var ending in endingList)
             endingDict[ending.name] = (ending.val, (Status)PlayerPrefs.GetInt(ending.name, 0), ending.bugs);
+
+        FindObjectsByType<TeleportTag>(FindObjectsSortMode.None)
+            .ToList()
+            .ForEach(loc =>
+            {
+                Assert.IsFalse(teleportLocations.ContainsKey(loc.tag), $"Duplicate TeleportTag found: {loc.tag} on {loc.gameObject.name}");
+                teleportLocations[loc.tag] = loc.transform.position;
+            });
     }
 
     void Start() => audioSource = GetComponent<AudioSource>();
@@ -122,4 +136,5 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void TeleportPlayerToLocation(TeleportTag.Tag tag) => Player.Instance.transform.position = teleportLocations[tag];
 }

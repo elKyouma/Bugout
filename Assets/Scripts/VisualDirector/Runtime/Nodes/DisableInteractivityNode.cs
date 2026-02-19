@@ -16,10 +16,10 @@ namespace VisualDirector
     {
         public async Task ExecuteAsync(DisableInteractivityRuntimeNode node, VisualDirector ctx)
         {
-            Assert.IsNotNull(ctx.currentInteractable, "No interactable to disable.");
+            Assert.IsNotNull(ctx.CurrentInteractable, "No interactable to disable.");
 
             if (node.Tag == "")
-                ctx.currentInteractable?.Disable();
+                ctx.CurrentInteractable?.Disable();
             else
                 GameObject.FindGameObjectsWithTag(node.Tag).First().GetComponent<IDisabable>().Disable();
         }
