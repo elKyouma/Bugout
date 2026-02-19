@@ -1,32 +1,33 @@
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Utility;
 
 /*Manages inventory, keeps several component references, and any other future control of the game itself you may need*/
 
 public class GameManager : MonoBehaviour
 {
+    private static GameManager instance;
+
     public AudioSource audioSource; //A primary audioSource a large portion of game sounds are passed through
-    public DialogueBoxController dialogueBoxController;
+    public DialogueBoxController dialogueBoxController; // INFO: dialgoue stuff, don't touch until dialogue graphs are done
     public HUD hud; //A reference to the HUD holding your health UI, coins, dialogue, etc.
     public Inventory inventory = new Inventory();
-    private static GameManager instance;
     [SerializeField] public AudioTrigger gameMusic;
     [SerializeField] public AudioTrigger gameAmbience;
 
     [System.Serializable]
-    public class EndingClass
+    private class EndingClass
     {
-        public string key;
-        public Ending val;
+        public string name;
+        public EndingSO val;
         public int bugs;
     }
 
     [SerializeField]
     private List<EndingClass> endingList = new List<EndingClass>();
-    private Dictionary<string, Ending> endingDict = new Dictionary<string, Ending>();
-    public Dictionary<string, int> gameCompletion = new Dictionary<string, int>();//0 nie zrobiono, 1 zrobiono
-    public Dictionary<string, int> reward = new Dictionary<string, int>();//0 nie zrobiono, 1 zrobiono
+    private Dictionary<string, (EndingSO, Status, int)> endingDict = new Dictionary<string, (EndingSO, Status, int)>();
     public static GameManager Instance
     {
         get
@@ -41,12 +42,8 @@ public class GameManager : MonoBehaviour
     {
         if (Instance != this) Destroy(gameObject);
 
-        foreach (var kvp in endingList)
-        {
-            endingDict[kvp.key] = kvp.val;
-            gameCompletion[kvp.key] = PlayerPrefs.GetInt(kvp.key, 0);
-            reward[kvp.key] = kvp.bugs;
-        }
+        foreach (var ending in endingList)
+            endingDict[ending.name] = (ending.val, (Status)PlayerPrefs.GetInt(ending.name, 0), ending.bugs);
     }
 
     void Start() => audioSource = GetComponent<AudioSource>();
@@ -94,30 +91,34 @@ public class GameManager : MonoBehaviour
         inventory.TryGetItemFromSlot(1);
     }
 
-    public void EndGame(string ending)
+    public (EndingSO, Status, int) GetEndingData(string endingName) => endingDict[endingName];
+    public void EndGame(string endingName)
     {
-        if (!endingDict.ContainsKey(ending))
-            Debug.LogError("Wrong ending name: " + ending);
+        if (!endingDict.ContainsKey(endingName))
+            Debug.LogError("Wrong ending name: " + endingName);
         else
         {
-            gameCompletion[ending] = 1;
-            if (PlayerPrefs.GetInt(ending) == 0)
-                Player.Instance.bugs += reward[ending];
+            var (endingSO, completionStatus, reward) = endingDict[endingName];
+            endingDict[endingName] = (endingSO, Status.Completed, reward);
 
-            PlayerPrefs.SetInt(ending, 1);
-            EndingPlayer.currentEnding = endingDict[ending];
+            if (PlayerPrefs.GetInt(endingName) == (int)Status.Completed)
+                Player.Instance.bugs += reward;
+
+            PlayerPrefs.SetInt(endingName, (int)Status.Completed);
+            EndingPlayer.currentEnding = endingSO;
             SceneManager.LoadScene("EndingScene");
         }
 
-        PlayerPrefs.SetString("CurrendEnding", ending);
+        PlayerPrefs.SetString("CurrendEnding", endingName);
     }
 
     [ContextMenu("ResetEndings")]
     public void ResetEndings()
     {
-        foreach (var kvp in endingList)
+        foreach (var ending in endingList)
         {
-            gameCompletion[kvp.key] = 0;
+            var (endingSO, _, reward) = endingDict[ending.name];
+            endingDict[ending.name] = (endingSO, Status.NotCompleted, reward);
         }
     }
 

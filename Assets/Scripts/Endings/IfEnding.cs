@@ -1,15 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utility;
 
 public class IfEnding : MonoBehaviour
 {
-    [SerializeField] private string ending;
-    [SerializeField] private int ifTrue;
+    [SerializeField] private string endingName;
+    [SerializeField] private Status endingStatus;
 
     private void Start()
     {
-        if(ifTrue != GameManager.Instance.gameCompletion[ending])
+        var (_, completionStatus, _) = GameManager.Instance.GetEndingData(endingName);
+        if (endingStatus != completionStatus)
         {
             gameObject.SetActive(false);
         }
