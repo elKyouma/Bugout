@@ -20,6 +20,8 @@ namespace VisualDirector
         public Animator animator;
         public AudioSource audioSource;
 
+        public IDisabable currentInteractable;
+
         public int choiceId = 0;
 
         [Header("Settings")]
@@ -39,13 +41,15 @@ namespace VisualDirector
             else
                 Debug.LogError($"Unsupported choice amount: {choiceAmount}");
         }
-        public async void Execute(VisualDirectorRuntimeGraph runtimeGraph)
+        public async void Execute(VisualDirectorRuntimeGraph runtimeGraph, IDisabable currentInteractable)
         {
+            this.currentInteractable = currentInteractable;
             animator.SetBool("active", true);
             
             var setDialogueExecutor = new SetDialogueExecutor();
             var waitForInputExecutor = new WaitForInputExecutor();
             var multiChoiceExecutor = new MultiChoiceExecutor();
+            var disableInteractivityExecutor = new DisableInteractivityExecutor();
 
             var node = runtimeGraph.Nodes[0];
             while (true)
@@ -64,6 +68,9 @@ namespace VisualDirector
                         break;
                     case MultiChoiceRuntimeNode multiChoiceNode:
                         await multiChoiceExecutor.ExecuteAsync(multiChoiceNode, this);
+                        break;
+                    case DisableInteractivityRuntimeNode disableInteractivityRuntimeNode:
+                        await disableInteractivityExecutor.ExecuteAsync(disableInteractivityRuntimeNode, this);
                         break;
                     default:
                         Debug.LogError($"No executor found for node type: {node.GetType()}");

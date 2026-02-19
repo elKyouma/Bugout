@@ -4,9 +4,13 @@ using System.Linq;
 using Unity.GraphToolkit.Editor;
 using UnityEditor.AssetImporters;
 using UnityEngine;
+using static VisualDirector.Editor.DisableInteractivityNode;
+using static VisualDirector.Editor.SetDialogueNode;
 
 namespace VisualDirector.Editor
 {
+
+
     [ScriptedImporter(1, VisualDirectorGraph.AssetExtension)]
     internal class VisualNovelDirectorImporter : ScriptedImporter
     {
@@ -40,12 +44,22 @@ namespace VisualDirector.Editor
                 visited.Add(node);
 
                 var runtimeNodes = TranslateNodeModelToRuntimeNodes(node);
+
+                // If this is a dialogue node and its next nodes are not choice nodes,
+                // insert a WaitForInput runtime node after the dialogue so the runtime
+                // will wait for input before continuing.
+                var nextModels = GetNextNodes(node).Where(n => n != null).ToList();
+                if (node is SetDialogueNode && !nextModels.Any(n => n is MultiChoiceNode)) // Any seems wastefull however it would be difficult to do better stream of execution
+                {
+                    var waitNode = new WaitForInputRuntimeNode();
+                    runtimeNodes.Last().Next.Add(waitNode);
+                    runtimeNodes.Add(waitNode);
+                }
+
                 runtimeAsset.Nodes.AddRange(runtimeNodes);
-
                 modelToRuntime[node] = runtimeNodes;
-                var nextNodes = GetNextNodes(node).Where(n => n != null).ToList();
 
-                foreach (var next in nextNodes)
+                foreach (var next in nextModels)
                     queue.Enqueue(next);
             }
 
@@ -98,7 +112,7 @@ namespace VisualDirector.Editor
         }
 
 
-        static List<VisualDirectorRuntimeNode> TranslateNodeModelToRuntimeNodes(INode nodeModel)
+        List<VisualDirectorRuntimeNode> TranslateNodeModelToRuntimeNodes(INode nodeModel)
         {
             var returnedNodes = new List<VisualDirectorRuntimeNode>();
             switch (nodeModel)
@@ -108,19 +122,32 @@ namespace VisualDirector.Editor
                     break;
 
                 case SetDialogueNode setDialogueNodeModel:
+
+                    setDialogueNodeModel.GetNodeOption(0).TryGetValue(out SoundType audioType);// do it base on this, not null value
+                    AudioClip audio = null;
+                    float volume = 0f;
+                    float delay = 0f;
+                    if (audioType == SoundType.Clip)
+                    {
+                        var port = setDialogueNodeModel.GetInputPortByName(SetDialogueNode.IN_PORT_AUDIO_CLIP_NAME);
+                        audio = GetInputPortValue<AudioClip>(port);
+                        volume = GetInputPortValue<float>(setDialogueNodeModel.GetInputPortByName(SetDialogueNode.IN_PORT_AUDIO_VOLUME_NAME));
+                        delay = GetInputPortValue<float>(setDialogueNodeModel.GetInputPortByName(SetDialogueNode.IN_PORT_AUDIO_DELAY_NAME));
+                    }
+                    
+                    
                     returnedNodes.Add(new SetDialogueRuntimeNode
                     {
                         ActorName = GetInputPortValue<string>(setDialogueNodeModel.GetInputPortByName(SetDialogueNode.IN_PORT_ACTOR_NAME_NAME)),
                         ActorSprite = GetInputPortValue<Sprite>(setDialogueNodeModel.GetInputPortByName(SetDialogueNode.IN_PORT_ACTOR_SPRITE_NAME)),
                         LocationIndex = (int)GetInputPortValue<SetDialogueNode.Location>(setDialogueNodeModel.GetInputPortByName(SetDialogueNode.IN_PORT_LOCATION_NAME)),
-                        DialogueText = GetInputPortValue<string>(setDialogueNodeModel.GetInputPortByName(SetDialogueNode.IN_PORT_DIALOGUE_NAME))
+                        DialogueText = GetInputPortValue<string>(setDialogueNodeModel.GetInputPortByName(SetDialogueNode.IN_PORT_DIALOGUE_NAME)),
+                        AudioClip = audio,
+                        AudioVolume = volume,
+                        AudioDelay = delay,
+                        //AudioGenerative = GetInputPortValue<GenerativeSound>(setDialogueNodeModel.GetInputPortByName(SetDialogueNode.IN_PORT_AUDIO_GENERATIVE_NAME))
                     });
-                    //returnedNodes.Add(new WaitForInputRuntimeNode());
-                    //returnedNodes[0].Next.Add(returnedNodes[1]); // kinda hacky way to link them directly here
-                    break;
-
-                case WaitForInputNode _:
-                    returnedNodes.Add(new WaitForInputRuntimeNode());
+                    
                     break;
 
                 case MultiChoiceNode _:
@@ -133,6 +160,18 @@ namespace VisualDirector.Editor
                     });
                     break;
 
+                case DisableInteractivityNode node:
+                    node.GetNodeOption(0).TryGetValue(out DisableInteractivityNode.InteractivityType type);// do it base on this, not null value
+                    string tag = "";
+                    if (type == InteractivityType.ByTag)
+                        tag = GetInputPortValue<string>(nodeModel.GetInputPortByName(DisableInteractivityNode.IN_PORT_TAG_NAME));
+
+                    returnedNodes.Add(new DisableInteractivityRuntimeNode
+                    {
+                        Tag = tag
+                    });
+                    break;
+
                 default:
                     throw new ArgumentException($"Unsupported node model type: {nodeModel.GetType()}");
             }
@@ -142,26 +181,22 @@ namespace VisualDirector.Editor
 
         static T GetInputPortValue<T>(IPort port)
         {
-            T value = default;
-
+            T value = default(T);
             if (port.isConnected)
             {
                 switch (port.firstConnectedPort.GetNode())
                 {
                     case IVariableNode variableNode:
                         variableNode.variable.TryGetDefaultValue<T>(out value);
-                        return value;
+                        return value; 
                     case IConstantNode constantNode:
                         constantNode.TryGetValue<T>(out value);
                         return value;
-                    default:
-                        break;
                 }
             }
-            else
-                port.TryGetValue(out value);
 
-            return value;
+            port.TryGetValue(out value);
+            return value; 
         }
     }
 }

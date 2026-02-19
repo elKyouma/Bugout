@@ -13,6 +13,9 @@ namespace VisualDirector
         public Sprite ActorSprite;
         public int LocationIndex;
         public string DialogueText;
+        public AudioClip AudioClip;
+        public float AudioVolume;
+        public float AudioDelay;
     }
 
     [Serializable]
@@ -46,6 +49,14 @@ namespace VisualDirector
                 img.sprite = runtimeNode.ActorSprite;
             }
 
+            //Implement delay and generative sound
+            if(runtimeNode.AudioClip)
+            {
+                AudioSource source = ctx.audioSource;
+                source.clip = runtimeNode.AudioClip;
+                source.volume = runtimeNode.AudioVolume;
+                source.PlayDelayed(runtimeNode.AudioDelay);
+            }
             await TypeTextWithSkipAsync(runtimeNode.DialogueText, ctx);
         }
 
@@ -100,8 +111,6 @@ namespace VisualDirector
             }
 
             label.text = dialogueText;
-
-            await inputProvider.InputDetected();
         }
     }
 }

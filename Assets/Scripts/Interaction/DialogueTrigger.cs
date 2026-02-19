@@ -2,7 +2,7 @@ using UnityEngine;
 using VisualDirector;
 /*Triggers a dialogue conversation, passing unique commands and information to the dialogue box and inventory system for fetch quests, etc.*/
 
-public class DialogueTrigger : MonoBehaviour
+public class DialogueTrigger : MonoBehaviour, IDisabable
 {
 
     public VisualDirectorRuntimeGraph vs; //optional reference, if there is use new system instead of legacy dialogue system
@@ -66,14 +66,14 @@ public class DialogueTrigger : MonoBehaviour
                     if (!vs)
                         GameManager.Instance.dialogueBoxController.Appear(dialogueStringA, characterName, this, false, audioLinesA, audioChoices, finishTalkingAnimatorBool, finishTalkingActivateObject, finishTalkingActivateObjectString, repeat, activateObjectChoice1, activateObjectChoice2);
                     else
-                        FindFirstObjectByType<VisualDirector.VisualDirector>().Execute(vs);
+                        FindFirstObjectByType<VisualDirector.VisualDirector>().Execute(vs, this);
                 else if (requiredBugs == 0 && GameManager.Instance.IsItemInInventory(requiredItem) || (requiredBugs != 0 && Player.Instance.bugs >= requiredBugs))
                 {
                     if (dialogueStringB != "")
                         if (!vs)
                             GameManager.Instance.dialogueBoxController.Appear(dialogueStringB, characterName, this, true, audioLinesB, audioChoices, "", null, "", repeat, activateObjectChoice1, activateObjectChoice2);
                         else
-                            FindFirstObjectByType<VisualDirector.VisualDirector>().Execute(vs);
+                            FindFirstObjectByType<VisualDirector.VisualDirector>().Execute(vs, this);
                     else
                         UseItem();
                 }
@@ -157,5 +157,10 @@ public class DialogueTrigger : MonoBehaviour
             sleeping = false;
             completed = false;
         }
+    }
+
+    public void Disable()
+    {
+        completed = true;
     }
 }
