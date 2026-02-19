@@ -8,7 +8,7 @@ using TMPro;
 public class EndingPlayer : MonoBehaviour
 {
     PlayableDirector dir;
-    public static Ending currentEnding;
+    public static EndingSO currentEnding;
 
     [SerializeField] private TextMeshProUGUI title;
     [SerializeField] private TextMeshProUGUI description;

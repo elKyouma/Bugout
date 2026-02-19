@@ -14,7 +14,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.common": {
-      "version": "12.0.1",
+      "version": "12.0.2",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -84,7 +84,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {
+<<<<<<< HEAD
       "version": "1.8.25",
+=======
+      "version": "1.8.28",
+>>>>>>> cc212c1 (Game manager rework)
       "depth": 2,
       "source": "registry",
       "dependencies": {

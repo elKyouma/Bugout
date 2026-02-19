@@ -14,10 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEditor.dll::UnityEditor.ContainerWindow
   m_PixelRect:
     serializedVersion: 2
+<<<<<<< HEAD
     x: 0
     y: 43.2
     width: 1536
     height: 820.8
+=======
+    x: -1920
+    y: -240
+    width: 1920
+    height: 1037
+>>>>>>> cc212c1 (Game manager rework)
   m_ShowMode: 4
   m_Title: Game
   m_RootView: {fileID: 6}
@@ -832,6 +839,7 @@ MonoBehaviour:
       m_Data: 60474
     m_ExpandedIDs:
     - m_Data: 0
+<<<<<<< HEAD
     - m_Data: 60286
     - m_Data: 60288
     - m_Data: 60290
@@ -847,6 +855,23 @@ MonoBehaviour:
     - m_Data: 60310
     - m_Data: 60312
     - m_Data: 60314
+=======
+    - m_Data: 56704
+    - m_Data: 56706
+    - m_Data: 56708
+    - m_Data: 56710
+    - m_Data: 56712
+    - m_Data: 56714
+    - m_Data: 56716
+    - m_Data: 56718
+    - m_Data: 56720
+    - m_Data: 56722
+    - m_Data: 56724
+    - m_Data: 56726
+    - m_Data: 56728
+    - m_Data: 56730
+    - m_Data: 56732
+>>>>>>> cc212c1 (Game manager rework)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -879,6 +904,7 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
+<<<<<<< HEAD
     - m_Data: 60286
     - m_Data: 60288
     - m_Data: 60290
@@ -894,6 +920,23 @@ MonoBehaviour:
     - m_Data: 60310
     - m_Data: 60312
     - m_Data: 60314
+=======
+    - m_Data: 56704
+    - m_Data: 56706
+    - m_Data: 56708
+    - m_Data: 56710
+    - m_Data: 56712
+    - m_Data: 56714
+    - m_Data: 56716
+    - m_Data: 56718
+    - m_Data: 56720
+    - m_Data: 56722
+    - m_Data: 56724
+    - m_Data: 56726
+    - m_Data: 56728
+    - m_Data: 56730
+    - m_Data: 56732
+>>>>>>> cc212c1 (Game manager rework)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1738,7 +1781,11 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
+<<<<<<< HEAD
     m_Target: {x: -16.288658, y: 33.223885, z: -0.033084307}
+=======
+    m_Target: {x: -45.94791, y: 1.1440568, z: -8.139594}
+>>>>>>> cc212c1 (Game manager rework)
     speed: 2
     m_Value: {x: -16.288658, y: 33.223885, z: -0.033084307}
   m_RenderMode: 0
@@ -1790,7 +1837,11 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
+<<<<<<< HEAD
     m_Target: 5.641047
+=======
+    m_Target: 14.781439
+>>>>>>> cc212c1 (Game manager rework)
     speed: 2
     m_Value: 5.641047
   m_Ortho:

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class EndingPlaceholder : MonoBehaviour
 {
-    [SerializeField] private Ending ending;
+    [SerializeField] private EndingSO ending;
 
     private void Awake()
     {

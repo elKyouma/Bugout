@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Timeline;
 
-[CreateAssetMenu(fileName = "New Ending", menuName = "Ending")]
-public class Ending : ScriptableObject
+[CreateAssetMenu(fileName = "New EndingSO", menuName = "EndingSO")]
+public class EndingSO : ScriptableObject
 {
     public string title;
     [Multiline]
