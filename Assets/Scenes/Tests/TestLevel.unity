@@ -3953,6 +3953,74 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1067044059}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1082078512
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1378712105915764707, guid: 4c574ce56d9f08c4b84dc2d73ff0c57d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -29.866272
+      objectReference: {fileID: 0}
+    - target: {fileID: 1378712105915764707, guid: 4c574ce56d9f08c4b84dc2d73ff0c57d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.9089476
+      objectReference: {fileID: 0}
+    - target: {fileID: 1378712105915764707, guid: 4c574ce56d9f08c4b84dc2d73ff0c57d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1378712105915764707, guid: 4c574ce56d9f08c4b84dc2d73ff0c57d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1378712105915764707, guid: 4c574ce56d9f08c4b84dc2d73ff0c57d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1378712105915764707, guid: 4c574ce56d9f08c4b84dc2d73ff0c57d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1378712105915764707, guid: 4c574ce56d9f08c4b84dc2d73ff0c57d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1378712105915764707, guid: 4c574ce56d9f08c4b84dc2d73ff0c57d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1378712105915764707, guid: 4c574ce56d9f08c4b84dc2d73ff0c57d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1378712105915764707, guid: 4c574ce56d9f08c4b84dc2d73ff0c57d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2545869755236595355, guid: 4c574ce56d9f08c4b84dc2d73ff0c57d,
+        type: 3}
+      propertyPath: m_Name
+      value: Dynamite
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4c574ce56d9f08c4b84dc2d73ff0c57d, type: 3}
 --- !u!850595691 &1144092502
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -37451,7 +37519,8 @@ MonoBehaviour:
   jumpParticles: {fileID: 1173623415}
   pauseMenu: {fileID: 1844477748}
   recoveryCounter: {fileID: 0}
-  explosives: {fileID: 0}
+  explosives: {fileID: 3577475383112696067, guid: 6476b51b82195274ea03f0a47d216ae7,
+    type: 3}
   cheatItems: []
   dead: 0
   frozen: 0
@@ -39156,3 +39225,4 @@ SceneRoots:
   - {fileID: 631700985}
   - {fileID: 951222665}
   - {fileID: 2034470271}
+  - {fileID: 1082078512}

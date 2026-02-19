@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Utility;
 
 public class EndingPlaceholder : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class EndingPlaceholder : MonoBehaviour
     private void Awake()
     {
         transform.localScale = Vector3.zero;
-        if (PlayerPrefs.GetInt(ending.name, 0) == 1 && ending.icon)
+        if ((Status)PlayerPrefs.GetInt(ending.name, 0) == Status.Completed && ending.icon)
         {
             GetComponent<Image>().sprite = ending.icon;
 
