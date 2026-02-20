@@ -5,6 +5,7 @@ using UnityEngine;
 /*The base physics for walking objects (Player.cs and Walker.cs). Source: https://learn.unity.com/tutorial/live-session-2d-platformer-character-controller! 
 Lots of complex stuff going on here. In ten years of making games, I've never worried about understanding any of this kind of stuff!*/
 
+[RequireComponent (typeof (Rigidbody2D))]
 public class PhysicsObject : MonoBehaviour
 {
     [Header ("Physics")]
@@ -21,22 +22,16 @@ public class PhysicsObject : MonoBehaviour
     protected const float minMoveDistance = 0.001f;
     protected const float shellRadius = 0.01f;
 
-    void OnEnable()
+    protected void SetUpOnAwake()
     {
         rb2d = GetComponent<Rigidbody2D>();
-    }
-
-    void Start()
-    {
         contactFilter.useTriggers = false;
         contactFilter.SetLayerMask(Physics2D.GetLayerCollisionMask(gameObject.layer));
         contactFilter.useLayerMask = true;
     }
 
-    void Update()
-    {
-        targetVelocity = Vector2.zero;
-    }
+    void Awake() => SetUpOnAwake();
+    void Update() => targetVelocity = Vector2.zero;
 
     void FixedUpdate()
     {
@@ -65,9 +60,7 @@ public class PhysicsObject : MonoBehaviour
             {
                 PlatformEffector2D platform = hitBuffer[i].collider.GetComponent<PlatformEffector2D>();
                 if (!platform || (hitBuffer[i].normal == Vector2.up && velocity.y < 0 && yMovement))
-                {
                     hitBufferList.Add(hitBuffer[i]);
-                }
             }
 
             for (int i = 0; i < hitBufferList.Count; i++)
@@ -85,9 +78,7 @@ public class PhysicsObject : MonoBehaviour
 
                 float projection = Vector2.Dot(velocity, currentNormal);
                 if (projection < 0)
-                {
                     velocity = velocity - projection * currentNormal;
-                }
 
                 float modifiedDistance = hitBuffer[i].distance - shellRadius;
                 distance = modifiedDistance < distance ? modifiedDistance : distance;

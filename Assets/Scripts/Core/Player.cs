@@ -1,26 +1,31 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /*Adds player functionality to a physics object*/
 
 [RequireComponent(typeof(RecoveryCounter))]
 
-public class Player : PhysicsObject
+public class Player : PhysicsObject, PlayerMovementInputs.IBasicActions
 {
     [Header("Reference")]
     public AudioSource audioSource;
     [SerializeField] private Animator animator;
-    private AnimatorFunctions animatorFunctions;
     public GameObject attackHit;
-    private CapsuleCollider2D capsuleCollider;
     public CameraEffects cameraEffects;
     [SerializeField] private ParticleSystem deathParticles;
-    [SerializeField] private AudioSource flameParticlesAudioSource;
     [SerializeField] private GameObject graphic;
     [SerializeField] private Component[] graphicSprites;
     [SerializeField] private ParticleSystem jumpParticles;
     [SerializeField] private GameObject pauseMenu;
     public RecoveryCounter recoveryCounter;
+
+    private float jumpHoldTime;
+    [SerializeField] private float maxJumpHoldTime = 0.8f;
+    [SerializeField] private float minJumpMultiplier = 0.2f;
+    [SerializeField] private float maxJumpMultiplier = 1f;
+
+    private PlayerMovementInputs inputs;
 
     private int drinkedBeer = 0;
 
@@ -38,7 +43,6 @@ public class Player : PhysicsObject
     }
 
     [Header("Properties")]
-    [SerializeField] private string[] cheatItems;
     public bool dead = false;
     public bool frozen = false;
     private float fallForgivenessCounter; //Counts how long the player has fallen off a ledge
@@ -60,9 +64,6 @@ public class Player : PhysicsObject
     private float nextAttack = 0f;
 
     public bool drunkEffectActive = false;
-    public bool enteredApartament = false;
-    public bool enteredBasement = false;
-    public bool enteredApartamentEntrance = false;
 
     [Header("Inventory")]
     public float ammo;
@@ -92,150 +93,68 @@ public class Player : PhysicsObject
     public AudioClip drinkingSound;
     [System.NonSerialized] public int whichHurtSound;
 
+    Vector2 move;
+
+    void Awake()
+    {
+        inputs = new PlayerMovementInputs();
+        inputs.Basic.SetCallbacks(this);
+        SetUpOnAwake();
+    }
+    void OnEnable() => inputs.Basic.Enable();
+    void OnDisable() => inputs.Basic.Disable();
+
     void Start()
     {
         bugs = PlayerPrefs.GetInt("Bugs", 0);
         Cursor.visible = false;
-        //SetUpCheatItems();
         health = maxHealth;
-        animatorFunctions = GetComponent<AnimatorFunctions>();
         origLocalScale = transform.localScale;
         recoveryCounter = GetComponent<RecoveryCounter>();
-
-
-
-        //Find all sprites so we can hide them when the player dies.
         graphicSprites = GetComponentsInChildren<SpriteRenderer>();
-
         SetGroundType();
     }
 
     private void Update()
     {
+        jumpHoldTime += Time.deltaTime;
         ComputeVelocity();
         if (drunkEffectActive == true) Postprocess.Instance.DrunkEffect();
     }
-
-    public void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.name == "Apartament") enteredApartament = true;
-        if (collision.name == "Basement") enteredBasement = true;
-        if (collision.name == "ApartamentEntrance") enteredApartamentEntrance = true;
-
-    }
-
     protected void ComputeVelocity()
     {
-        //Player movement & attack
-        Vector2 move = Vector2.zero;
         ground = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), -Vector2.up);
 
         //Lerp launch back to zero at all times
         launch += (0 - launch) * Time.deltaTime * launchRecovery;
-
         if (Input.GetButtonDown("Cancel"))
-        {
             pauseMenu.SetActive(true);
-        }
 
         if (GameManager.Instance.IsItemInInventory(ItemType.Balloon))
-        {
-            gravityModifier = 1.8f;
-        }
+            gravityModifier = 2.0f;
         else
-        {
             gravityModifier = 3.2f;
-        }
 
         if (GameManager.Instance.DoesInventoryHaveTheSameItems(ItemType.Balloon))
-        {
             gravityModifier = -1.5f;
-        }
-        //Movement, jumping, and attacking!
+
         if (!frozen)
         {
-            move.x = Input.GetAxis("Horizontal") + launch;
-
-            if (Input.GetButtonDown("Jump") && animator.GetBool("grounded") == true && !jumping)
-            {
-                animator.SetBool("pounded", false);
-                if (GameManager.Instance.IsItemInInventory(ItemType.Balloon))
-                {
-                    Jump(1.0f);
-                }
-                else Jump(1f);
-
-            }
+            move.x += launch;
 
             //Flip the graphic's localScale
             if (move.x > 0.01f)
-            {
                 graphic.transform.localScale = new Vector3(origLocalScale.x, transform.localScale.y, transform.localScale.z);
-            }
             else if (move.x < -0.01f)
-            {
                 graphic.transform.localScale = new Vector3(-origLocalScale.x, transform.localScale.y, transform.localScale.z);
-            }
-
-
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
-                var (item, success) = GameManager.Instance.TryGetItemFromInventorySlot(0);
-                if (success)
-                {
-                    switch (item)
-                    {
-                        case ItemType.Beer: BeerAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(0); break;
-                        case ItemType.Balloon: BalloonAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(0); break;
-                        case ItemType.Dynamite: DynamiteAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(0); break;
-                        case ItemType.Knife: MeleeAction(); break;
-                        default: break;
-                    }
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.X))
-            {
-                var (item, success) = GameManager.Instance.TryGetItemFromInventorySlot(1);
-                if (success)
-                {
-                    switch (item)
-                    {
-                        case ItemType.Beer: BeerAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(1); break;
-                        case ItemType.Balloon: BalloonAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(1); break;
-                        case ItemType.Dynamite: DynamiteAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(1); break;
-                        case ItemType.Knife: MeleeAction(); break;
-                        default: break;
-                    }
-                }
-            }
-
-            //Secondary attack (currently shooting) with right click
-            if (Input.GetMouseButtonDown(1))
-            {
-                Shoot(true);
-            }
-            else if (Input.GetMouseButtonUp(1))
-            {
-                Shoot(false);
-            }
-
-            if (shooting)
-            {
-                SubtractAmmo();
-            }
 
             //Allow the player to jump even if they have just fallen off an edge ("fall forgiveness")
             if (!grounded)
             {
                 if (fallForgivenessCounter < fallForgiveness && !jumping)
-                {
                     fallForgivenessCounter += Time.deltaTime;
-                }
                 else
-                {
                     animator.SetBool("grounded", false);
-                }
             }
             else
             {
@@ -246,40 +165,22 @@ public class Player : PhysicsObject
             //Set each animator float, bool, and trigger to it knows which animation to fire
             animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
             animator.SetFloat("velocityY", velocity.y);
-            animator.SetInteger("attackDirectionY", (int)Input.GetAxis("VerticalDirection"));
-            animator.SetInteger("moveDirection", (int)Input.GetAxis("HorizontalDirection"));
-            //animator.SetBool("hasChair", GameManager.Instance.inventory.ContainsKey("chair"));
+            animator.SetInteger("attackDirectionY", (int)move.y);
+            animator.SetInteger("moveDirection", (int)move.x);
             targetVelocity = move * maxSpeed;
         }
-        else
-        {
-            //If the player is set to frozen, his launch should be zeroed out!
+        else //If the player is set to frozen, his launch should be zeroed out!
             launch = 0;
-        }
     }
 
     public void MeleeAction()
     {
-        if (Time.time > nextAttack)
-        {
-            animator.SetTrigger("attack");
-            Shoot(false);
-            nextAttack = Time.time + attackCooldown;
-        }
+        if (Time.time < nextAttack) return;
+        
+        animator.SetTrigger("attack");
+        nextAttack = Time.time + attackCooldown;
     }
-
-    public void BalloonAction()
-    {
-        //GameManager.Instance.RemoveInventoryItem(name);
-        audioSource.PlayOneShot(balloonBreakSound);
-        //var objs = GetComponentsInChildren<AddObjToInventory>();
-        //foreach (var obj in objs)
-        //{
-        //    if (obj.invName == name)
-        //        obj.gameObject.SetActive(false);
-        //}
-    }
-
+    public void BalloonAction() => audioSource.PlayOneShot(balloonBreakSound);
     public void BeerAction()
     {
         drinkedBeer++;
@@ -299,18 +200,14 @@ public class Player : PhysicsObject
 
     public void SetGroundType()
     {
-        //If we want to add variable ground types with different sounds, it can be done here
         switch (groundType)
         {
-            case "Grass":
-                stepSound = grassSound;
-                break;
+            case "Grass": stepSound = grassSound; break;
         }
     }
 
     public void Freeze(bool freeze)
     {
-        //Set all animator params to ensure the player stops running, jumping, etc and simply stands
         if (freeze)
         {
             animator.SetInteger("moveDirection", 0);
@@ -339,13 +236,9 @@ public class Player : PhysicsObject
             recoveryCounter.counter = 0;
 
             if (health <= 0)
-            {
                 StartCoroutine(Die());
-            }
             else
-            {
                 health -= hitPower;
-            }
 
             GameManager.Instance.hud.HealthBarHurt();
         }
@@ -358,13 +251,10 @@ public class Player : PhysicsObject
         GameManager.Instance.audioSource.PlayOneShot(hurtSounds[whichHurtSound]);
 
         if (whichHurtSound >= hurtSounds.Length - 1)
-        {
             whichHurtSound = 0;
-        }
         else
-        {
             whichHurtSound++;
-        }
+        
         cameraEffects.Shake(100, 1f);
     }
 
@@ -374,41 +264,17 @@ public class Player : PhysicsObject
         yield return new WaitForSeconds(length);
         Time.timeScale = 1f;
     }
-
-
     public IEnumerator Die()
     {
         yield return new WaitForSeconds(0.1f);
         GameManager.Instance.EndGame("Death");
-        /*if (!frozen)
-        {
-            dead = true;
-            deathParticles.Emit(10);
-            GameManager.Instance.audioSource.PlayOneShot(deathSound);
-            Hide(true);
-            Time.timeScale = .6f;
-            yield return new WaitForSeconds(5f);
-            GameManager.Instance.hud.animator.SetTrigger("coverScreen");
-            GameManager.Instance.hud.loadSceneName = SceneManager.GetActiveScene().name;
-            Time.timeScale = 1f;
-        }*/
     }
-
     public void ResetLevel()
     {
         Freeze(true);
         dead = false;
         health = maxHealth;
     }
-
-    public void SubtractAmmo()
-    {
-        if (ammo > 0)
-        {
-            ammo -= 20 * Time.deltaTime;
-        }
-    }
-
     public void Jump(float jumpMultiplier)
     {
         if (velocity.y != jumpPower)
@@ -420,21 +286,16 @@ public class Player : PhysicsObject
             jumping = true;
         }
     }
-
     public void PlayStepSound()
     {
-        //Play a step sound at a random pitch between two floats, while also increasing the volume based on the Horizontal axis
         audioSource.pitch = (Random.Range(0.9f, 1.1f));
         audioSource.PlayOneShot(stepSound, Mathf.Abs(Input.GetAxis("Horizontal") / 10));
     }
-
     public void PlayJumpSound()
     {
         audioSource.pitch = (Random.Range(1f, 1f));
         GameManager.Instance.audioSource.PlayOneShot(jumpSound, .1f);
     }
-
-
     public void JumpEffect()
     {
         jumpParticles.Emit(1);
@@ -452,24 +313,19 @@ public class Player : PhysicsObject
             jumping = false;
         }
     }
-
     public void PunchEffect()
     {
         GameManager.Instance.audioSource.PlayOneShot(punchSound);
         cameraEffects.Shake(100, 1f);
     }
-
     public void ActivatePound()
     {
         //A series of events needs to occur when the player activates the pound ability
         if (!pounding)
         {
             animator.SetBool("pounded", false);
-
             if (velocity.y <= 0)
-            {
                 velocity = new Vector3(velocity.x, hurtLaunchPower.y / 2, 0.0f);
-            }
 
             GameManager.Instance.audioSource.PlayOneShot(poundActivationSounds[Random.Range(0, poundActivationSounds.Length)]);
             pounding = true;
@@ -491,57 +347,66 @@ public class Player : PhysicsObject
             animator.SetBool("pounded", true);
         }
     }
-
-    public void FlashEffect()
-    {
-        //Flash the player quickly
-        animator.SetTrigger("flash");
-    }
-
+    public void FlashEffect() => animator.SetTrigger("flash");
     public void Hide(bool hide)
     {
         Freeze(hide);
         foreach (SpriteRenderer sprite in graphicSprites)
             sprite.gameObject.SetActive(!hide);
     }
+    private void OnCollisionExit2D(Collision2D collision) => rb2d.linearVelocity = Vector2.zero;
 
-    public void Shoot(bool equip)
+    public void OnMovement(InputAction.CallbackContext context) => move = new Vector2(context.ReadValue<Vector2>().x, move.y);
+    
+    private void UseItem(uint placeId)
     {
-        //Flamethrower ability
-        //if (GameManager.Instance.inventory.ContainsKey("flamethrower"))
-        //{
-        //    if (equip)
-        //    {
-        //        if (!shooting)
-        //        {
-        //            animator.SetBool("shooting", true);
-        //            GameManager.Instance.audioSource.PlayOneShot(equipSound);
-        //            flameParticlesAudioSource.Play();
-        //            shooting = true;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (shooting)
-        //        {
-        //            animator.SetBool("shooting", false);
-        //            flameParticlesAudioSource.Stop();
-        //            GameManager.Instance.audioSource.PlayOneShot(holsterSound);
-        //            shooting = false;
-        //        }
-        //    }
-        //}
+        var (item, success) = GameManager.Instance.TryGetItemFromInventorySlot(0);
+        if (success)
+        {
+            switch (item)
+            {
+                case ItemType.Beer: BeerAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(0); break;
+                case ItemType.Balloon: BalloonAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(0); break;
+                case ItemType.Dynamite: DynamiteAction(); GameManager.Instance.TryRemoveItemFromInventorySlot(0); break;
+                case ItemType.Knife: MeleeAction(); break;
+                default: break;
+            }
+        }
     }
 
-    //public void SetUpCheatItems()
-    //{
-    //    //Allows us to get various items immediately after hitting play, allowing for testing. 
-    //    for (int i = 0; i < cheatItems.Length; i++)
-    //        GameManager.Instance.GetInventoryItem(cheatItems[i], null);
-    //}
-
-    private void OnCollisionExit2D(Collision2D collision)
+    public void OnAction1(InputAction.CallbackContext context)
     {
-        rb2d.linearVelocity = Vector2.zero;
+        if (context.ReadValue<float>() != 0) UseItem(0);
     }
+
+    public void OnAction2(InputAction.CallbackContext context)
+    {
+        if (context.ReadValue<float>() != 0) UseItem(1);
+    }
+
+    public void OnAction3(InputAction.CallbackContext context)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (context.started)
+            jumpHoldTime = 0f;
+
+        if (context.canceled)
+        {
+            if (!animator.GetBool("grounded") || jumping)
+                return;
+
+            float normalizedHold = jumpHoldTime / maxJumpHoldTime;
+            float jumpMultiplier = Mathf.Max(minJumpMultiplier, Mathf.Lerp(0, maxJumpMultiplier, normalizedHold)); //TODO baloon multiplier
+
+            Debug.Log($"Jump hold time: {jumpHoldTime}, Jump multiplier: {jumpMultiplier}, Normalized hold: {normalizedHold}");
+
+            animator.SetBool("pounded", false);
+            Jump(jumpMultiplier);
+        }
+    }
+
 }

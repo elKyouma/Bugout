@@ -101,9 +101,10 @@ public class Walker : PhysicsObject
                 if (enemyType == EnemyType.Zombie)
                 {
                     //if ((Mathf.Abs(distanceFromPlayer.x) < attentionRange) && (Mathf.Abs(distanceFromPlayer.y) < attentionRange))
-                    if ((enemylocation == EnemyLocation.Apartament && Player.Instance.enteredApartament == true) ||
-                        (enemylocation == EnemyLocation.ApartamentEntrance && Player.Instance.enteredApartamentEntrance) ||
-                        (enemylocation == EnemyLocation.Basement && Player.Instance.enteredBasement))
+                    //if ((enemylocation == EnemyLocation.Apartament && Player.Instance.enteredApartament == true) ||
+                        //(enemylocation == EnemyLocation.ApartamentEntrance && Player.Instance.enteredApartamentEntrance) ||
+                        //(enemylocation == EnemyLocation.Basement && Player.Instance.enteredBasement))
+                    //LEGACY DO NOT WORK
                     {
                         followPlayer = true;
                         sitStillMultiplier = 1;
@@ -111,7 +112,7 @@ public class Walker : PhysicsObject
                         if (neverStopFollowing)
                             attentionRange = 10000000000;
                     }
-                    else
+                    //else
                     {
                         if (sitStillWhenNotFollowing)
                             sitStillMultiplier = 0;

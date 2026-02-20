@@ -26,5 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes (Legacy)/LoadingScreen.unity
     guid: 0a7d28f110e67f44ca9439732655adff
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 3ef8f470d74b91040a055ede9c0b1116,
+      type: 3}
   m_UseUCBPForAssetBundles: 0
