@@ -23,8 +23,7 @@ public class GameManager : MonoBehaviour, IGameManager
     [System.Serializable]
     private class EndingClass
     {
-        public string name;
-        public EndingSO val;
+        public EndingSO scriptableObject;
         public int bugs;
     }
 
@@ -49,7 +48,7 @@ public class GameManager : MonoBehaviour, IGameManager
         if (Instance != this) Destroy(gameObject);
 
         foreach (var ending in endingList)
-            endingDict[ending.name] = (ending.val, (Status)PlayerPrefs.GetInt(ending.name, 0), ending.bugs);
+            endingDict[ending.scriptableObject.name] = (ending.scriptableObject, (Status)PlayerPrefs.GetInt(ending.scriptableObject.name, 0), ending.bugs);
 
         FindObjectsByType<TeleportTag>(FindObjectsSortMode.None)
             .ToList()
@@ -131,8 +130,8 @@ public class GameManager : MonoBehaviour, IGameManager
     {
         foreach (var ending in endingList)
         {
-            var (endingSO, _, reward) = endingDict[ending.name];
-            endingDict[ending.name] = (endingSO, Status.NotCompleted, reward);
+            var (endingSO, _, reward) = endingDict[ending.scriptableObject.name];
+            endingDict[ending.scriptableObject.name] = (endingSO, Status.NotCompleted, reward);
         }
     }
 

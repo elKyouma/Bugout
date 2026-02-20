@@ -4909,7 +4909,7 @@ GameObject:
   - component: {fileID: 4367243104289108809}
   - component: {fileID: 4250382453837104946}
   m_Layer: 18
-  m_Name: Dynamite
+  m_Name: ExpoldingDynamite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
