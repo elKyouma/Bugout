@@ -1690,8 +1690,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f455846e72d53e44da0075887218c07f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: com.inf.my-hierarchy.runtime::MyHierarchy.MyHierarchyHeader
-  fontColor: {r: 1, g: 1, b: 1, a: 1}
-  backgroundColor: {r: 0.6415094, g: 0.30773708, b: 0, a: 1}
+  fontColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  backgroundColor:
+    r: 0.6415094
+    g: 0.30773708
+    b: 0
+    a: 1
 --- !u!4 &545900334
 Transform:
   m_ObjectHideFlags: 0
@@ -3318,7 +3326,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 882859761}
-  - component: {fileID: 882859762}
   m_Layer: 0
   m_Name: Core
   m_TagString: EditorOnly
@@ -3341,20 +3348,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &882859762
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 882859760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f455846e72d53e44da0075887218c07f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: com.inf.my-hierarchy.runtime::MyHierarchy.MyHierarchyHeader
-  fontColor: {r: 1, g: 1, b: 1, a: 1}
-  backgroundColor: {r: 0.8113208, g: 0.70284224, b: 0, a: 1}
 --- !u!114 &889098491 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114960326724290942, guid: 0f618da174ea44266865b50a04995f3c,
@@ -10163,7 +10156,6 @@ GameObject:
   - component: {fileID: 1682854552}
   - component: {fileID: 1682854551}
   - component: {fileID: 1682854553}
-  - component: {fileID: 1682854561}
   m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
@@ -10451,20 +10443,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1682854561
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1682854550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80f9f154c1d0b2942b47a59acef6a662, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: com.inf.my-hierarchy.runtime::MyHierarchyGroup
-  fontColor: {r: 1, g: 0.8838954, b: 0, a: 1}
-  backgroundColor: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 1}
 --- !u!1001 &1721541527
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10834,8 +10812,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f455846e72d53e44da0075887218c07f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: com.inf.my-hierarchy.runtime::MyHierarchy.MyHierarchyHeader
-  fontColor: {r: 1, g: 1, b: 1, a: 1}
-  backgroundColor: {r: 0.011645047, g: 0.745283, b: 0, a: 1}
+  fontColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  backgroundColor:
+    r: 0.011645047
+    g: 0.745283
+    b: 0
+    a: 1
 --- !u!1001 &1803172190
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11805,8 +11791,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f455846e72d53e44da0075887218c07f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: com.inf.my-hierarchy.runtime::MyHierarchy.MyHierarchyHeader
-  fontColor: {r: 1, g: 1, b: 1, a: 1}
-  backgroundColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  fontColor:
+    r: 1
+    g: 1
+    b: 1
+    a: 1
+  backgroundColor:
+    r: 0.5
+    g: 0.5
+    b: 0.5
+    a: 1
 --- !u!1001 &2063424042
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12489,32 +12483,8 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1725323729}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 520269851150587156, guid: b922eb766c4ce644c8d045b3f23ec055,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 521576955446414670}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b922eb766c4ce644c8d045b3f23ec055, type: 3}
---- !u!1 &521576955446414669 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 520269851150587156, guid: b922eb766c4ce644c8d045b3f23ec055,
-    type: 3}
-  m_PrefabInstance: {fileID: 521576955446414668}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &521576955446414670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 521576955446414669}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80f9f154c1d0b2942b47a59acef6a662, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: com.inf.my-hierarchy.runtime::MyHierarchyGroup
-  fontColor: {r: 0.38559678, g: 1, b: 0.3443396, a: 1}
-  backgroundColor: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 1}
 --- !u!1001 &1201722028519914531
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12607,6 +12577,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1775917071358614, guid: 1e45fe2070dd5483db2ebd3e8b5dae90, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1775917071358614, guid: 1e45fe2070dd5483db2ebd3e8b5dae90, type: 3}
       propertyPath: m_Name
       value: GameManager
@@ -12711,32 +12685,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1775917071358614, guid: 1e45fe2070dd5483db2ebd3e8b5dae90,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2902462223969951109}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1e45fe2070dd5483db2ebd3e8b5dae90, type: 3}
---- !u!1 &2902462223969951108 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1775917071358614, guid: 1e45fe2070dd5483db2ebd3e8b5dae90,
-    type: 3}
-  m_PrefabInstance: {fileID: 2902462223969951107}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2902462223969951109
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2902462223969951108}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80f9f154c1d0b2942b47a59acef6a662, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: com.inf.my-hierarchy.runtime::MyHierarchyGroup
-  fontColor: {r: 0, g: 0.54109573, b: 1, a: 1}
-  backgroundColor: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 1}
 --- !u!1001 &3336127085827294760
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37319,7 +37269,6 @@ GameObject:
   - component: {fileID: 4584272740913930378}
   - component: {fileID: 4584654185899013552}
   - component: {fileID: 3960247881557441159}
-  - component: {fileID: 4584654185899013553}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -37760,20 +37709,6 @@ MonoBehaviour:
   audioSource: {fileID: 0}
   particleSystem: {fileID: 4380045253412133140}
   setBoolInAnimator: {fileID: 0}
---- !u!114 &4584654185899013553
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4470988946233553630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80f9f154c1d0b2942b47a59acef6a662, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: com.inf.my-hierarchy.runtime::MyHierarchyGroup
-  fontColor: {r: 1, g: 0, b: 0.25125694, a: 1}
-  backgroundColor: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 1}
 --- !u!1001 &7018260866872453974
 PrefabInstance:
   m_ObjectHideFlags: 0
