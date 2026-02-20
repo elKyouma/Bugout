@@ -4,6 +4,7 @@
   <Project Path="LeanTweenAssembly.csproj" />
   <Project Path="VisualDirector.csproj" />
   <Project Path="ScriptsAssemblyDef.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Unity.GraphToolkit.Samples.VisualNovelDirector.Editor.csproj" />
   <Project Path="Assembly-CSharp-Editor-firstpass.csproj" />
 </Solution>

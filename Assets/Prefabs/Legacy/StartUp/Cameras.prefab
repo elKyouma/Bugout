@@ -43,11 +43,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4039398741816762}
-  - component: {fileID: 114545493876079580}
-  - component: {fileID: 5702272768536811611}
   - component: {fileID: 8910583485716075151}
-  - component: {fileID: 1247838861599951770}
   - component: {fileID: 8135262973350443675}
+  - component: {fileID: 5702272768536811611}
+  - component: {fileID: 114545493876079580}
+  - component: {fileID: 1247838861599951770}
   m_Layer: 0
   m_Name: VirtualCamera
   m_TagString: Untagged
@@ -70,44 +70,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4030989770181816}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114545493876079580
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064247828759204}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 303d86b7c63d6433795d7b39d81a2e63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraWorldSize: {x: 27.55556, y: 15.5, z: 1}
-  cinemachineFramingTransposer: {fileID: 0}
-  multiChannelPerlin: {fileID: 0}
-  defaultShake: 1
-  defaultShakeLength: 0.2
-  virtualCamera: {fileID: 0}
---- !u!114 &5702272768536811611
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064247828759204}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f453f694addf4275988fac205bc91968, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineConfiner2D
-  BoundingShape2D: {fileID: 7042944784859661082}
-  Damping: 0.5
-  SlowingDistance: 5
-  OversizeWindow:
-    Enabled: 0
-    MaxWindowSize: 0
-    Padding: 0
-  m_LegacyMaxWindowSize: -2
 --- !u!114 &8910583485716075151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,23 +113,6 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
---- !u!114 &1247838861599951770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064247828759204}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineBasicMultiChannelPerlin
-  NoiseProfile: {fileID: 11400000, guid: b241f91b9ccf8ff489abf204b30d3112, type: 2}
-  PivotOffset: {x: 0, y: 0, z: 0}
-  AmplitudeGain: 0.3
-  FrequencyGain: 2.135592e-19
-  m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!114 &8135262973350443675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,6 +144,61 @@ MonoBehaviour:
     Time: 0
     Smoothing: 3
     IgnoreY: 0
+--- !u!114 &5702272768536811611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064247828759204}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f453f694addf4275988fac205bc91968, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineConfiner2D
+  BoundingShape2D: {fileID: 7042944784859661082}
+  Damping: 0.5
+  SlowingDistance: 5
+  OversizeWindow:
+    Enabled: 0
+    MaxWindowSize: 0
+    Padding: 0
+  m_LegacyMaxWindowSize: -2
+--- !u!114 &114545493876079580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064247828759204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 303d86b7c63d6433795d7b39d81a2e63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraWorldSize: {x: 27.55556, y: 15.5, z: 1}
+  cinemachineFramingTransposer: {fileID: 0}
+  multiChannelPerlin: {fileID: 0}
+  defaultShake: 1
+  defaultShakeLength: 0.2
+  virtualCamera: {fileID: 0}
+--- !u!114 &1247838861599951770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064247828759204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineBasicMultiChannelPerlin
+  NoiseProfile: {fileID: 11400000, guid: b241f91b9ccf8ff489abf204b30d3112, type: 2}
+  PivotOffset: {x: 0, y: 0, z: 0}
+  AmplitudeGain: 0.3
+  FrequencyGain: 2.135592e-19
+  m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &1884548363852062
 GameObject:
   m_ObjectHideFlags: 0
@@ -228,7 +228,7 @@ Transform:
   m_GameObject: {fileID: 1884548363852062}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -57.55, y: 1.5294998, z: -10.255}
+  m_LocalPosition: {x: -57.55, y: 1.5294998, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -267,7 +267,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 40
+  field of view: 80
   orthographic: 1
   orthographic size: 7.75
   m_Depth: -1
@@ -385,7 +385,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7019607100704309930
 Transform:
   m_ObjectHideFlags: 0
