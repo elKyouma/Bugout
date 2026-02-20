@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.dcfa_pixels.notes": {
+      "version": "https://github.com/DCFApixels/Unity-Notes.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "20bba03e2d09c6a90ffc305d950348243eeb2690"
+    },
     "com.unity.2d.animation": {
       "version": "13.0.4",
       "depth": 0,
