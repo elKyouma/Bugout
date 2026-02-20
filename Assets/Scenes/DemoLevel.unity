@@ -15953,7 +15953,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 94d933a660d2242dba7c588800ebe6ad, type: 3}
   - {fileID: 8300000, guid: 801d5a8d18edb4d4a9c59d836b5bd581, type: 3}
   deleteGameObject: {fileID: 0}
-  getWhichItem: chair
+  getWhichItem: 0
   getBugsAmount: 0
   finishTalkingAnimatorBool: 
   finishTalkingActivateObjectString: 
@@ -15963,7 +15963,7 @@ MonoBehaviour:
   getSound: {fileID: 8300000, guid: 9eec99a76d7df4a45bf9c565de92875a, type: 3}
   instantGet: 0
   removeRequiredItem: 0
-  requiredItem: Melee
+  requiredItem: 0
   requiredBugs: 0
   useItemAnimator: {fileID: 0}
   useItemAnimatorBool: 
@@ -15995,7 +15995,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 94d933a660d2242dba7c588800ebe6ad, type: 3}
   - {fileID: 8300000, guid: 801d5a8d18edb4d4a9c59d836b5bd581, type: 3}
   deleteGameObject: {fileID: 0}
-  getWhichItem: chair
+  getWhichItem: 0
   getBugsAmount: 0
   finishTalkingAnimatorBool: 
   finishTalkingActivateObjectString: 
@@ -16005,7 +16005,7 @@ MonoBehaviour:
   getSound: {fileID: 8300000, guid: 9eec99a76d7df4a45bf9c565de92875a, type: 3}
   instantGet: 0
   removeRequiredItem: 0
-  requiredItem: 
+  requiredItem: 0
   requiredBugs: 0
   useItemAnimator: {fileID: 0}
   useItemAnimatorBool: 

@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.inf.my-hierarchy": {
+      "version": "https://github.com/INFGameDev/My-Hierarchy.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "49fd57a9e777b07a5f2904583abf1ee3c6818696"
+    },
     "com.unity.2d.animation": {
       "version": "13.0.4",
       "depth": 0,
