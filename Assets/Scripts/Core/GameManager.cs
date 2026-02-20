@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour, IGameManager
     private static GameManager instance;
 
     public AudioSource audioSource; //A primary audioSource a large portion of game sounds are passed through
-    public DialogueBoxController dialogueBoxController; // INFO: dialgoue stuff, don't touch until dialogue graphs are done
     public HUD hud; //A reference to the HUD holding your health UI, coins, dialogue, etc.
     public Inventory inventory = new Inventory();
     [SerializeField] public AudioTrigger gameMusic;
