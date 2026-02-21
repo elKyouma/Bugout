@@ -998,8 +998,6 @@ GameObject:
   - component: {fileID: 4055233515670133227}
   - component: {fileID: 164275042263271590}
   - component: {fileID: 6015757472912757129}
-  - component: {fileID: 5034677017490796983}
-  - component: {fileID: 2525921614030781474}
   - component: {fileID: 361573013442939043}
   - component: {fileID: 4494928727296582174}
   - component: {fileID: 6959965767690446876}
@@ -1099,43 +1097,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 0
---- !u!114 &5034677017490796983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4839855239115095146}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84c6fad32587e4505a99d57b9b6a3e07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animator: {fileID: 4494928727296582174}
-  audioSource: {fileID: 3983792393997497398}
-  dialogueAudioSource: {fileID: 7600930740353813339}
-  dialogue: {fileID: 2525921614030781474}
-  selectionSound: {fileID: 8300000, guid: 63232440e1706407abe454bb2535a7e0, type: 3}
-  typeSounds:
-  - {fileID: 8300000, guid: 7474770cdac414a0a8632d509a4f777e, type: 3}
-  - {fileID: 8300000, guid: 08235ab976c144c9ab258832cf54eff0, type: 3}
-  - {fileID: 8300000, guid: 8cecff2ecc25f41c7867d5024d48fa5a, type: 3}
-  choice1Mesh: {fileID: 3798843056233293986}
-  choice2Mesh: {fileID: 426930792949768028}
-  nameMesh: {fileID: 1016919157389374871}
-  textMesh: {fileID: 76645327970250294}
---- !u!114 &2525921614030781474
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4839855239115095146}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 123e13f56c29d4309a60543d214f1489, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &361573013442939043
 MonoBehaviour:
   m_ObjectHideFlags: 0
