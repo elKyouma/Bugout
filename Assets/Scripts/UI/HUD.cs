@@ -15,7 +15,6 @@ public class HUD : MonoBehaviour
     public TextMeshProUGUI coinsMesh;
     [SerializeField] private GameObject healthBar;
     [SerializeField] private Image[] inventoryItemGraphic;
-    [SerializeField] private GameObject startUp;
 
     private float ammoBarWidth;
     private float ammoBarWidthEased; //Easing variables slowly ease towards a number
