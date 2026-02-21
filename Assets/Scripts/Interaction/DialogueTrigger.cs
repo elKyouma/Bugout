@@ -4,7 +4,6 @@ using VisualDirector;
 
 public class DialogueTrigger : MonoBehaviour, IDisabable, IDialogueController
 {
-
     public VisualDirectorRuntimeGraph vs; //optional reference, if there is use new system instead of legacy dialogue system
 
     [Header("References")]
@@ -24,7 +23,7 @@ public class DialogueTrigger : MonoBehaviour, IDisabable, IDialogueController
     {
         Cursor.visible = true;
 
-        if (col.gameObject == Player.Instance.gameObject && !sleeping && !completed && Player.Instance.grounded)
+        if (col.gameObject == GameManager.Instance.newPlayer.gameObject && !sleeping && !completed)
         {
             iconAnimator.SetBool("active", true);
             if (autoHit || (Input.GetAxis("Submit") > 0))
@@ -40,7 +39,7 @@ public class DialogueTrigger : MonoBehaviour, IDisabable, IDialogueController
 
     void OnTriggerExit2D(Collider2D col)
     {
-        if (col.gameObject == Player.Instance.gameObject)
+        if (col.gameObject == GameManager.Instance.newPlayer.gameObject)
         {
             iconAnimator.SetBool("active", false);
             sleeping = completed;
@@ -58,6 +57,5 @@ public class DialogueTrigger : MonoBehaviour, IDisabable, IDialogueController
     }
 
     public void Disable() => completed = true;
-
     public void UpdateDialogue(VisualDirectorRuntimeGraph vs) => this.vs = vs;
 }

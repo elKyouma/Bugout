@@ -18,24 +18,12 @@ public class Postprocess : MonoBehaviour
 
     bool gettingDrunk = false;
 
-    private static Postprocess instance;
-    public static Postprocess Instance
-    {
-        get
-        {
-            if (instance == null) instance = FindFirstObjectByType<Postprocess>();
-            return instance;
-        }
-    }
-
     private void Start()
     {
         source = GetComponent<AudioSource>();
         volumeProfile = GetComponent<Volume>()?.profile;
         if (!volumeProfile) throw new System.NullReferenceException(nameof(VolumeProfile));
     }
-
-
 
     public void MultiplyBugEffect()
     {
@@ -95,14 +83,12 @@ public class Postprocess : MonoBehaviour
         if (!volumeProfile.TryGet(out motionBlur)) throw new System.NullReferenceException(nameof(motionBlur));
         motionBlur.intensity.Override(0.2f);
 
-        if (Player.Instance)
-            Player.Instance.cameraEffects.Shake(5, 0.5f);
-
+        //GameManager.Instance.newPlayer.cameraEffects.Shake(5, 0.5f);
     }
 
     public void TrueEndingSequence()
     {
-        Player.Instance.Freeze(true);
+        //GameManager.Instance.newPlayer.Freeze(true);
         StartCoroutine("TrueEnding");
     }
 

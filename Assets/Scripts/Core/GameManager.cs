@@ -14,10 +14,16 @@ public class GameManager : MonoBehaviour, IGameManager
     private static GameManager instance;
 
     public AudioSource audioSource; //A primary audioSource a large portion of game sounds are passed through
-    public HUD hud; //A reference to the HUD holding your health UI, coins, dialogue, etc.
-    public Inventory inventory = new Inventory();
+    public Inventory inventory = new();
     [SerializeField] public AudioTrigger gameMusic;
     [SerializeField] public AudioTrigger gameAmbience;
+    [SerializeField] private GameObject pauseMenu;
+
+    [HideInInspector] public HUD hud; //A reference to the HUD holding your health UI, coins, dialogue, etc.
+    [HideInInspector] public PlayerController newPlayer;
+    [HideInInspector] public Postprocess postProcess;
+
+    public uint Bugs;
 
     [System.Serializable]
     private class EndingClass
@@ -44,6 +50,10 @@ public class GameManager : MonoBehaviour, IGameManager
 
     void Awake()
     {
+        newPlayer = FindFirstObjectByType<PlayerController>();
+        hud = FindFirstObjectByType<HUD>();
+        postProcess = FindAnyObjectByType<Postprocess>();
+
         if (Instance != this) Destroy(gameObject);
 
         foreach (var ending in endingList)
@@ -114,7 +124,7 @@ public class GameManager : MonoBehaviour, IGameManager
             endingDict[endingName] = (endingSO, Status.Completed, reward);
 
             if (PlayerPrefs.GetInt(endingName) == (int)Status.Completed)
-                Player.Instance.bugs += reward;
+                Bugs += (uint)reward;
 
             PlayerPrefs.SetInt(endingName, (int)Status.Completed);
             EndingPlayer.currentEnding = endingSO;
@@ -134,8 +144,7 @@ public class GameManager : MonoBehaviour, IGameManager
         }
     }
 
-    public void TeleportPlayerToLocation(TeleportTag.Tag tag) => Player.Instance.transform.position = teleportLocations[tag];
-
+    public void TeleportPlayerToLocation(TeleportTag.Tag tag) => newPlayer.transform.position = teleportLocations[tag];
     public bool HasItem(IGameManager.ItemType item, int number)
     {
         if (number == 0 || number > 2)
@@ -150,14 +159,12 @@ public class GameManager : MonoBehaviour, IGameManager
 
     }
 
-    public bool HasBugs(int number) => Player.Instance.bugs >= number;
-
+    public bool HasBugs(int number) => Bugs >= number;
     public void GiveItem(IGameManager.ItemType item)
     {
         if (!TryAddItemToInventory(new Item((ItemType)item, null)))
             Debug.LogError("Failed to add item to inventory: " + item);
     }
-
     public void TakeItem(IGameManager.ItemType item)
     {
         var (slotId, succeess )= TryGetItemIventorySlotID((ItemType)item);
@@ -166,4 +173,5 @@ public class GameManager : MonoBehaviour, IGameManager
         else
             Debug.LogError("Failed to remove item from inventory: " + item);
     }
+    public void TurnOnPauseMenu() => pauseMenu.SetActive(true);
 }

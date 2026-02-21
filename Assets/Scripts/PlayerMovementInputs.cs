@@ -136,6 +136,15 @@ public partial class @PlayerMovementInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Cancel"",
+                    ""type"": ""Button"",
+                    ""id"": ""42676203-101e-47c3-af8d-1940450d3bb5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -292,6 +301,28 @@ public partial class @PlayerMovementInputs: IInputActionCollection2, IDisposable
                     ""action"": ""Action3"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""761118d1-ab39-4f60-87ab-ae629fc1753d"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4c7bb3aa-3034-4785-81b6-14ded6816a68"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -305,6 +336,7 @@ public partial class @PlayerMovementInputs: IInputActionCollection2, IDisposable
         m_Basic_Action1 = m_Basic.FindAction("Action1", throwIfNotFound: true);
         m_Basic_Action2 = m_Basic.FindAction("Action2", throwIfNotFound: true);
         m_Basic_Action3 = m_Basic.FindAction("Action3", throwIfNotFound: true);
+        m_Basic_Cancel = m_Basic.FindAction("Cancel", throwIfNotFound: true);
     }
 
     ~@PlayerMovementInputs()
@@ -390,6 +422,7 @@ public partial class @PlayerMovementInputs: IInputActionCollection2, IDisposable
     private readonly InputAction m_Basic_Action1;
     private readonly InputAction m_Basic_Action2;
     private readonly InputAction m_Basic_Action3;
+    private readonly InputAction m_Basic_Cancel;
     /// <summary>
     /// Provides access to input actions defined in input action map "Basic".
     /// </summary>
@@ -421,6 +454,10 @@ public partial class @PlayerMovementInputs: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Basic/Action3".
         /// </summary>
         public InputAction @Action3 => m_Wrapper.m_Basic_Action3;
+        /// <summary>
+        /// Provides access to the underlying input action "Basic/Cancel".
+        /// </summary>
+        public InputAction @Cancel => m_Wrapper.m_Basic_Cancel;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -462,6 +499,9 @@ public partial class @PlayerMovementInputs: IInputActionCollection2, IDisposable
             @Action3.started += instance.OnAction3;
             @Action3.performed += instance.OnAction3;
             @Action3.canceled += instance.OnAction3;
+            @Cancel.started += instance.OnCancel;
+            @Cancel.performed += instance.OnCancel;
+            @Cancel.canceled += instance.OnCancel;
         }
 
         /// <summary>
@@ -488,6 +528,9 @@ public partial class @PlayerMovementInputs: IInputActionCollection2, IDisposable
             @Action3.started -= instance.OnAction3;
             @Action3.performed -= instance.OnAction3;
             @Action3.canceled -= instance.OnAction3;
+            @Cancel.started -= instance.OnCancel;
+            @Cancel.performed -= instance.OnCancel;
+            @Cancel.canceled -= instance.OnCancel;
         }
 
         /// <summary>
@@ -563,5 +606,12 @@ public partial class @PlayerMovementInputs: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnAction3(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Cancel" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCancel(InputAction.CallbackContext context);
     }
 }

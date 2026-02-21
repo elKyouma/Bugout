@@ -12,7 +12,7 @@ public abstract class Collectable : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject == Player.Instance.gameObject)
+        if (col.gameObject == GameManager.Instance.newPlayer.gameObject)
             Collect();
 
         //Collect me if I trigger with an object tagged "Death Zone", aka an area the player can fall to certain death
@@ -24,7 +24,7 @@ public abstract class Collectable : MonoBehaviour
     {
         if (collectSounds.Length > 0)
             GameManager.Instance.audioSource.PlayOneShot(collectSounds[Random.Range(0, collectSounds.Length)], Random.Range(.6f, 1f));
-        Player.Instance.FlashEffect();
+        //GameManager.Instance.newPlayer.FlashEffect();
 
         // If my parent has an Ejector script, it means that my parent is actually what needs to be destroyed, along with me, once collected
         if (transform.parent.GetComponent<Ejector>() != null)

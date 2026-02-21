@@ -5,6 +5,7 @@ using UnityEngine;
 so we use it for both player attacks and enemy attacks. 
 */
 
+//LEGACY NOTE: 
 public class AttackHit : MonoBehaviour
 {
     public enum AttacksWhat { EnemyBase, Player, DestructibleWall };
@@ -29,51 +30,43 @@ public class AttackHit : MonoBehaviour
     {
         //Determine which side the attack is on
         if (parent.transform.position.x < col.transform.position.x)
-        {
             targetSide = 1;
-        }
         else
-        {
             targetSide = -1;
-        }
 
         //Determine what components we're hitting
 
-        //Attack Player
-        if (attacksWhat == AttacksWhat.Player)
-        {
-            if (col.GetComponent<Player>() != null)
-            {
-                Player.Instance.GetHurt(targetSide, hitPower);
-                if (isBomb) transform.parent.GetComponent<EnemyBase>().Die();
-            }
-        }
+        ////Attack Player
+        //if (attacksWhat == AttacksWhat.Player)
+        //{
+        //    if (col.GetComponent<Player>() != null)
+        //    {
+        //        Player.Instance.GetHurt(targetSide, hitPower);
+        //        if (isBomb) transform.parent.GetComponent<EnemyBase>().Die();
+        //    }
+        //}
 
-        //Attack Enemies
-        else if (attacksWhat == AttacksWhat.EnemyBase && col.GetComponent<EnemyBase>() != null)
-        {
-            col.GetComponent<EnemyBase>().GetHurt(targetSide, hitPower);
-        }
+        ////Attack Enemies
+        //else if (attacksWhat == AttacksWhat.EnemyBase && col.GetComponent<EnemyBase>() != null)
+        //{
+        //    col.GetComponent<EnemyBase>().GetHurt(targetSide, hitPower);
+        //}
 
-        //Attack Breakables
-        else if (attacksWhat == AttacksWhat.EnemyBase && col.GetComponent<EnemyBase>() == null && col.GetComponent<Breakable>() != null)
-        {
-            col.GetComponent<Breakable>().GetHurt(hitPower);
-        }
+        ////Attack Breakables
+        //else if (attacksWhat == AttacksWhat.EnemyBase && col.GetComponent<EnemyBase>() == null && col.GetComponent<Breakable>() != null)
+        //{
+        //    col.GetComponent<Breakable>().GetHurt(hitPower);
+        //}
 
         //Blow up bombs if they touch walls
-        if (isBomb && col.gameObject.layer == 8)
-        {
-            transform.parent.GetComponent<EnemyBase>().Die();
-        }
+        //if (isBomb && col.gameObject.layer == 8)
+        //{
+        //    transform.parent.GetComponent<EnemyBase>().Die();
+        //}
     }
 
-    public void ExplodeObject()
-    {
-        Destroy(gameObject);
-    }
+    public void ExplodeObject() => Destroy(gameObject);
 
-    //Temporarily disable this collider to ensure bombs can launch from inside enemies without blowing up!
     IEnumerator TempColliderDisable()
     {
         Collider2D collider = GetComponent<Collider2D>();

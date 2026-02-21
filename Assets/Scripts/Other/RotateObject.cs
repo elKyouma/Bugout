@@ -1,17 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-/*Rotates a 2D gameObject!*/ 
+﻿using UnityEngine;
 
 public class RotateObject : MonoBehaviour
 {
+    [SerializeField] private float speed = 1f;
+    [SerializeField] private Vector3 rotationAxis = Vector3.back;
 
-    [SerializeField] float speed = 1;
-
-    // Update is called once per frame
-    void Update()
-    {
-        transform.Rotate(Vector3.back * Time.deltaTime * speed);
-    }
+    void Update() => transform.Rotate(rotationAxis * speed * Time.deltaTime);
 }

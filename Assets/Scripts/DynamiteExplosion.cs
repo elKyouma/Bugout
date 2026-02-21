@@ -16,7 +16,7 @@ public class DynamiteExplosion : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        startPosition = Player.Instance.transform.position;
+        startPosition = GameManager.Instance.newPlayer.transform.position;
         startPosition.y += 2f;
         gameObject.transform.position = startPosition;
         Debug.Log("dynamite exists");
@@ -54,10 +54,8 @@ public class DynamiteExplosion : MonoBehaviour
             }
         }
 
-        if (Vector2.Distance(transform.position, Player.Instance.transform.position) <= 5f)
-        {
+        if (Vector2.Distance(transform.position, GameManager.Instance.newPlayer.transform.position) <= 5f)
             GameManager.Instance.EndGame("PlayerExplosion");
-        }
         else
         {
             gameObject.GetComponent<Rigidbody2D>().gravityScale = 0;
@@ -66,13 +64,10 @@ public class DynamiteExplosion : MonoBehaviour
             Graphics.SetActive(false);
             dynamiteFx.Stop();
             dynamiteFx.PlayOneShot(explosionFx);
-            Player.Instance.cameraEffects.Shake(100, 1f);
+            //GameManager.Instance.newPlayer.cameraEffects.Shake(100, 1f);
 
             StartCoroutine(Destruction());
         }
-
-
-
     }
 
     IEnumerator Destruction()

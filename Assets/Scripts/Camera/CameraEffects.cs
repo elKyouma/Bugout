@@ -20,12 +20,10 @@ public class CameraEffects : MonoBehaviour
         cinemachineFramingTransposer = virtualCamera.GetComponent<CinemachinePositionComposer>();
 
         //Inform the player what CameraEffect it should be controlling, no matter what scene we are on.
-        if (Player.Instance)
-            Player.Instance.cameraEffects = this;
+        //GameManager.Instance.newPlayer.cameraEffects = this;
         virtualCamera = GetComponent<CinemachineCamera>();
         multiChannelPerlin = virtualCamera.GetComponent<CinemachineBasicMultiChannelPerlin>();
-
-        virtualCamera.Follow = Player.Instance.transform;
+        virtualCamera.Follow = GameManager.Instance.newPlayer.transform;
     }
 
     void Update() => multiChannelPerlin.FrequencyGain += (0 - multiChannelPerlin.FrequencyGain) * Time.deltaTime * (10 - shakeLength);

@@ -1,23 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using PrimeTween;
 
 public class Levitate : MonoBehaviour
 {
-    [SerializeField]
-    private float height;
-    [SerializeField]
-    private float speed;
+    [SerializeField] private float height = 1f;
+    [SerializeField] private float speed = 1f;
 
-    private float start;
+    private float startY;
+
     void Start()
     {
-        start = transform.localPosition.y;
-    }
+        startY = transform.localPosition.y;
 
-    // Update is called once per frame
-    void Update()
-    {
-        transform.localPosition = new Vector3(transform.localPosition.x, start + Mathf.Sin(Time.time * speed) * height,transform.localPosition.z);
+        // Tween Y position up and down
+        Tween.PositionY(
+            transform,
+            endValue: startY + height,
+            duration: 1f / speed,
+            ease: Ease.InOutSine,
+            cycles: -1,
+            cycleMode: CycleMode.Yoyo
+        );
     }
 }

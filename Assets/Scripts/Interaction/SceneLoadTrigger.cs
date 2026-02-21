@@ -11,11 +11,11 @@ public class SceneLoadTrigger : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject == Player.Instance.gameObject)
+        if (col.gameObject == GameManager.Instance.newPlayer.gameObject)
         {
             GameManager.Instance.hud.loadSceneName = loadSceneName;
             GameManager.Instance.ClearInventory();
-            GameManager.Instance.hud.animator.SetTrigger("coverScreen");
+            GameManager.Instance.hud.CoverScreen();
             enabled = false;
         }
     }

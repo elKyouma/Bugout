@@ -1,26 +1,31 @@
+using JetBrains.Annotations;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(RecoveryCounter))]
-public class Player : PhysicsObject, PlayerMovementInputs.IBasicActions
+public class NewPlayer : MonoBehaviour, PlayerMovementInputs.IBasicActions
 {
     [Header("Reference")]
-    public AudioSource audioSource;
-    [SerializeField] private Animator animator;
     public GameObject attackHit;
     public CameraEffects cameraEffects;
     [SerializeField] private ParticleSystem deathParticles;
     [SerializeField] private GameObject graphic;
     [SerializeField] private Component[] graphicSprites;
     [SerializeField] private ParticleSystem jumpParticles;
-    [SerializeField] private GameObject pauseMenu;
-    public RecoveryCounter recoveryCounter;
 
     private float jumpHoldTime;
     [SerializeField] private float maxJumpHoldTime = 0.8f;
     [SerializeField] private float minJumpMultiplier = 0.2f;
     [SerializeField] private float maxJumpMultiplier = 1f;
+
+    [Header("Asymmetrical Jump")]
+    [SerializeField] private float baseGravity = 100f;
+    [SerializeField] private float riseGravityMultiplier = 1f;
+    [SerializeField] private float fallGravityMultiplier = 2.5f;
+    [SerializeField] private float lowJumpMultiplier = 2f;
+
+    private bool jumpHeld;
 
     private PlayerMovementInputs inputs;
     private int drinkedBeer = 0;
@@ -28,8 +33,6 @@ public class Player : PhysicsObject, PlayerMovementInputs.IBasicActions
 
     private bool isClimbing = false;
     private bool canClimb = false;
-    public float health = 1;
-    public float maxHealth = 1;
 
     [Header("Properties")]
     public bool dead = false;
@@ -45,8 +48,6 @@ public class Player : PhysicsObject, PlayerMovementInputs.IBasicActions
     public float jumpPower = 17;
     private bool jumping;
     private Vector3 origLocalScale;
-    [System.NonSerialized] public bool pounded;
-    [System.NonSerialized] public bool pounding;
     [System.NonSerialized] public bool shooting = false;
 
     [SerializeField] float attackCooldown = 0.5f;
@@ -57,6 +58,9 @@ public class Player : PhysicsObject, PlayerMovementInputs.IBasicActions
     [Header("Inventory")]
     private int mBugs;
     public int bugs { get { return mBugs; } set { mBugs = value; PlayerPrefs.SetInt("Bugs", value); } }
+    public int health;
+    [Range(1, 10)]
+    public int maxHealth;
 
     public GameObject dynamitePrefab;
 
@@ -69,9 +73,7 @@ public class Player : PhysicsObject, PlayerMovementInputs.IBasicActions
     public AudioClip holsterSound;
     public AudioClip jumpSound;
     public AudioClip landSound;
-    public AudioClip poundSound;
     public AudioClip punchSound;
-    public AudioClip[] poundActivationSounds;
     public AudioClip stepSound;
     public AudioClip balloonBreakSound;
     public AudioClip drinkingSound;
@@ -80,11 +82,23 @@ public class Player : PhysicsObject, PlayerMovementInputs.IBasicActions
 
     [SerializeField] private LayerMask climbableLayer;
 
+    private float gravityModifier = 1;
+    private Vector2 velocity;
+    private Vector2 targetVelocity;
+    private Rigidbody2D rb2d;
+    private AudioSource audioSource;
+    private Animator animator;
+
+    public bool IsGrounded { get { return ground.transform != null; } }
+
+
     void Awake()
     {
         inputs = new PlayerMovementInputs();
         inputs.Basic.SetCallbacks(this);
-        SetUpOnAwake();
+        rb2d = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
+        animator = GetComponent<Animator>();
     }
     void OnEnable() => inputs.Basic.Enable();
     void OnDisable() => inputs.Basic.Disable();
@@ -95,26 +109,38 @@ public class Player : PhysicsObject, PlayerMovementInputs.IBasicActions
         Cursor.visible = false;
         health = maxHealth;
         origLocalScale = transform.localScale;
-        recoveryCounter = GetComponent<RecoveryCounter>();
-        graphicSprites = GetComponentsInChildren<SpriteRenderer>();
+        //graphicSprites = GetComponentsInChildren<SpriteRenderer>();
         SetGroundType();
     }
 
-    private void Update()
+    void Update()
     {
+        applyItemEffects();
+
         jumpHoldTime += Time.deltaTime;
-        if(!canClimb) ComputeVelocity();
+        
+        if(!canClimb) computeVelocity();
         if (drunkEffectActive == true) GameManager.Instance.postProcess.DrunkEffect();
+
+        if (!IsGrounded)
+        {
+            float gravity = baseGravity * gravityModifier;
+            if (velocity.y < 0)
+                targetVelocity.y -= gravity * fallGravityMultiplier * Time.deltaTime;
+            else if (velocity.y > 0)
+            {
+                if (!jumpHeld)
+                    targetVelocity.y -= gravity * lowJumpMultiplier * Time.deltaTime;
+                else
+                    targetVelocity.y -= gravity * riseGravityMultiplier * Time.deltaTime;
+            }
+        }
+        velocity = Vector2.Lerp(velocity, targetVelocity, Time.deltaTime * (IsGrounded ? 10 : 5));
+        rb2d.linearVelocity = velocity;
     }
-    protected void ComputeVelocity()
+
+    void applyItemEffects()
     {
-        ground = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), -Vector2.up);
-
-        //Lerp launch back to zero at all times
-        launch += (0 - launch) * Time.deltaTime * launchRecovery;
-        if (Input.GetButtonDown("Cancel"))
-            pauseMenu.SetActive(true);
-
         if (GameManager.Instance.IsItemInInventory(ItemType.Balloon))
             gravityModifier = 2.0f;
         else
@@ -122,19 +148,35 @@ public class Player : PhysicsObject, PlayerMovementInputs.IBasicActions
 
         if (GameManager.Instance.DoesInventoryHaveTheSameItems(ItemType.Balloon))
             gravityModifier = -1.5f;
+    }
+
+    void flipSpriteInRightDir()
+    {
+        if (move.x > 0.01f)
+            transform.localScale = new Vector3(origLocalScale.x, origLocalScale.y, origLocalScale.z);
+        else if (move.x < -0.01f)
+            transform.localScale = new Vector3(-origLocalScale.x, origLocalScale.y, origLocalScale.z);
+    }
+
+    void computeVelocity()
+    {
+        ground = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), -Vector2.up, 0.1f);
+
+        if (IsGrounded && velocity.y < 0f)
+        {
+            velocity.y = 0f;
+            targetVelocity.y = 0f;
+        }
+        //Lerp launch back to zero at all times
+        launch += (0 - launch) * Time.deltaTime * launchRecovery;
 
         if (!frozen)
         {
             move.x += launch;
-
-            //Flip the graphic's localScale
-            if (move.x > 0.01f)
-                graphic.transform.localScale = new Vector3(origLocalScale.x, transform.localScale.y, transform.localScale.z);
-            else if (move.x < -0.01f)
-                graphic.transform.localScale = new Vector3(-origLocalScale.x, transform.localScale.y, transform.localScale.z);
+            flipSpriteInRightDir();
 
             //Allow the player to jump even if they have just fallen off an edge ("fall forgiveness")
-            if (!grounded)
+            if (!IsGrounded)
             {
                 if (fallForgivenessCounter < fallForgiveness && !jumping)
                     fallForgivenessCounter += Time.deltaTime;
@@ -211,14 +253,13 @@ public class Player : PhysicsObject, PlayerMovementInputs.IBasicActions
     public void GetHurt(int hurtDirection, int hitPower)
     {
         //If the player is not frozen (ie talking, spawning, etc), recovering, and pounding, get hurt!
-        if (!frozen && !recoveryCounter.recovering && !pounding)
+        if (!frozen)
         {
             HurtEffect();
             cameraEffects.Shake(100, 1);
             animator.SetTrigger("hurt");
             velocity.y = hurtLaunchPower.y;
             launch = hurtDirection * (hurtLaunchPower.x);
-            recoveryCounter.counter = 0;
 
             if (health <= 0)
                 StartCoroutine(Die());
@@ -262,14 +303,12 @@ public class Player : PhysicsObject, PlayerMovementInputs.IBasicActions
     }
     public void Jump(float jumpMultiplier)
     {
-        if (velocity.y != jumpPower)
-        {
-            velocity.y = jumpPower * jumpMultiplier; //The jumpMultiplier allows us to use the Jump function to also launch the player from bounce platforms
-            PlayJumpSound();
-            PlayStepSound();
-            JumpEffect();
-            jumping = true;
-        }
+        velocity.y = jumpPower * jumpMultiplier; //The jumpMultiplier allows us to use the Jump function to also launch the player from bounce platforms
+        targetVelocity.y = jumpPower * jumpMultiplier; //The jumpMultiplier allows us to use the Jump function to also launch the player from bounce platforms
+        PlayJumpSound();
+        PlayStepSound();
+        JumpEffect();
+        jumping = true;
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -314,40 +353,6 @@ public class Player : PhysicsObject, PlayerMovementInputs.IBasicActions
             audioSource.pitch = (Random.Range(0.6f, 1f));
             audioSource.PlayOneShot(landSound);
             jumping = false;
-        }
-    }
-    public void PunchEffect()
-    {
-        GameManager.Instance.audioSource.PlayOneShot(punchSound);
-        cameraEffects.Shake(100, 1f);
-    }
-    public void ActivatePound()
-    {
-        //A series of events needs to occur when the player activates the pound ability
-        if (!pounding)
-        {
-            animator.SetBool("pounded", false);
-            if (velocity.y <= 0)
-                velocity = new Vector3(velocity.x, hurtLaunchPower.y / 2, 0.0f);
-
-            GameManager.Instance.audioSource.PlayOneShot(poundActivationSounds[Random.Range(0, poundActivationSounds.Length)]);
-            pounding = true;
-            FreezeFrameEffect(.3f);
-        }
-    }
-    public void PoundEffect()
-    {
-        //As long as the player as activated the pound in ActivatePound, the following will occur when hitting the ground.
-        if (pounding)
-        {
-            animator.ResetTrigger("attack");
-            velocity.y = jumpPower / 1.4f;
-            animator.SetBool("pounded", true);
-            GameManager.Instance.audioSource.PlayOneShot(poundSound);
-            cameraEffects.Shake(200, 1f);
-            pounding = false;
-            recoveryCounter.counter = 0;
-            animator.SetBool("pounded", true);
         }
     }
     public void FlashEffect() => animator.SetTrigger("flash");
@@ -400,22 +405,38 @@ public class Player : PhysicsObject, PlayerMovementInputs.IBasicActions
     public void OnJump(InputAction.CallbackContext context)
     {
         if (context.started)
+        {
             jumpHoldTime = 0f;
+            jumpHeld = true;
+        }
 
         if (context.canceled)
         {
+            jumpHeld = false;
+
             if (!animator.GetBool("grounded") || jumping)
                 return;
 
             float normalizedHold = jumpHoldTime / maxJumpHoldTime;
-            float jumpMultiplier = Mathf.Max(minJumpMultiplier, Mathf.Lerp(0, maxJumpMultiplier, normalizedHold)); //TODO baloon multiplier
+            float jumpMultiplier = Mathf.Max(
+                minJumpMultiplier,
+                Mathf.Lerp(0, maxJumpMultiplier, normalizedHold)
+            );
 
-            Debug.Log($"Jump hold time: {jumpHoldTime}, Jump multiplier: {jumpMultiplier}, Normalized hold: {normalizedHold}");
-
-            animator.SetBool("pounded", false);
             Jump(jumpMultiplier);
         }
     }
 
     public void OnCancel(InputAction.CallbackContext context) => GameManager.Instance.TurnOnPauseMenu();
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+
+        Vector2 origin = new(transform.position.x, transform.position.y);
+        Vector2 direction = -Vector2.up;
+        float distance = 0.1f;
+
+        Gizmos.DrawLine(origin, origin + direction * distance);
+    }
 }
